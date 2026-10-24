@@ -5,6 +5,7 @@ import { safeEqual, sign } from './signature.js';
 export function createMockGateway({ secret = env.MOCK_GATEWAY_SECRET } = {}) {
   return {
     name: 'mock',
+    publicKey: 'mock',
 
     async createOrder({ amountPaise }) {
       return { orderId: `order_mock_${crypto.randomUUID()}`, amount: amountPaise, currency: 'INR', keyId: 'mock' };

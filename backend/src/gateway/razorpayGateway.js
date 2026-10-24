@@ -9,6 +9,7 @@ export function createRazorpayGateway() {
 
   return {
     name: 'razorpay',
+    publicKey: env.RAZORPAY_KEY_ID,
 
     async createOrder({ amountPaise, receipt }) {
       const order = await client.orders.create({

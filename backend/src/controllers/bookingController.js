@@ -1,6 +1,6 @@
 import { Booking } from '../models/Booking.js';
 import { cancelBookingAsDiner } from '../services/bookingLifecycleService.js';
-import { createBooking } from '../services/bookingService.js';
+import { createBooking, getResumeOrder } from '../services/bookingService.js';
 import { withDeposits } from '../services/bookingView.js';
 import { expireStaleHolds } from '../services/holdExpiry.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -23,4 +23,8 @@ export const mine = asyncHandler(async (req, res) => {
     .populate('table', 'label')
     .sort({ date: -1, slotStart: -1 });
   sendOk(res, await withDeposits(bookings));
+});
+
+export const resumeOrder = asyncHandler(async (req, res) => {
+  sendOk(res, await getResumeOrder({ bookingId: req.valid.params.id, userId: req.user._id }));
 });

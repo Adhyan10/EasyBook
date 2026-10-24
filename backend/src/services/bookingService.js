@@ -4,6 +4,7 @@ import {
   MAX_LIVE_HOLDS_PER_DINER,
   MS_PER_MINUTE,
   PAISE_PER_RUPEE,
+  PAYMENT_STATUS,
 } from '../constants.js';
 import { getGateway } from '../gateway/index.js';
 import { Booking } from '../models/Booking.js';
@@ -75,6 +76,27 @@ async function openPaymentOrder({ booking, restaurant, partySize }) {
     logger.error('Could not open payment order', { bookingId: booking._id, err });
     throw new AppError(502, 'Payment service is unavailable. Please try again.');
   }
+}
+
+export async function getResumeOrder({ bookingId, userId }, now = new Date()) {
+  const booking = await Booking.findById(bookingId);
+  if (!booking) throw new AppError(404, 'Booking not found');
+  if (!booking.diner.equals(userId)) throw new AppError(403, 'This is not your booking');
+
+  const holdIsLive =
+    booking.status === BOOKING_STATUS.PENDING_PAYMENT && booking.holdExpiresAt && booking.holdExpiresAt > now;
+  const payment = holdIsLive && (await Payment.findOne({ booking: booking._id, status: PAYMENT_STATUS.CREATED }));
+  if (!payment) throw new AppError(409, 'This hold has expired or is already paid. Book the table again if needed.');
+
+  const gateway = getGateway();
+  const order = {
+    orderId: payment.gatewayOrderId,
+    amount: payment.amount * PAISE_PER_RUPEE,
+    currency: 'INR',
+    keyId: gateway.publicKey,
+    gateway: gateway.name,
+  };
+  return { booking, order };
 }
 
 export async function createBooking({ diner, restaurantId, date, slotStart, partySize }, now = new Date()) {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ROLES } from '../constants.js';
-import { cancel, create, mine } from '../controllers/bookingController.js';
+import { cancel, create, mine, resumeOrder } from '../controllers/bookingController.js';
 import { adjust, changeStatus, dayBookings, deposits, retryRefund } from '../controllers/ownerBookingController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
@@ -13,6 +13,7 @@ const ownerOnly = [requireAuth, requireRole(ROLES.OWNER)];
 
 bookingRoutes.post('/bookings', ...dinerOnly, validate({ body: createBookingBody }), create);
 bookingRoutes.get('/bookings/mine', ...dinerOnly, mine);
+bookingRoutes.get('/bookings/:id/order', ...dinerOnly, validate({ params: idParam }), resumeOrder);
 bookingRoutes.patch('/bookings/:id/cancel', ...dinerOnly, validate({ params: idParam }), cancel);
 
 bookingRoutes.get('/restaurants/:id/bookings', ...ownerOnly, validate({ params: idParam, query: dayQuery }), dayBookings);
