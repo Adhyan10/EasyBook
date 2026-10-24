@@ -18,15 +18,15 @@ function ItemRow({ item, busy, onSave, onDelete }) {
         <td>{rupees(item.price)}</td>
         <td>{item.isVeg ? 'Veg' : 'Non-veg'}</td>
         <td className="row">
-          <button type="button" className="secondary" disabled={busy} onClick={() => setEditing(true)}>Edit</button>
+          <button type="button" className="secondary" disabled={busy} onClick={() => { setDraft({ name: item.name, price: item.price }); setEditing(true); }}>Edit</button>
           <button type="button" className="danger" disabled={busy} onClick={() => onDelete(item)}>Delete</button>
         </td>
       </tr>
     );
   }
   const save = async () => {
-    await onSave(item, { name: draft.name, price: Number(draft.price) });
-    setEditing(false);
+    const saved = await onSave(item, { name: draft.name, price: Number(draft.price) });
+    if (saved) setEditing(false);
   };
   return (
     <tr>
@@ -55,8 +55,10 @@ export default function ManageMenu() {
     try {
       await action();
       reload();
+      return true;
     } catch (err) {
       setActionError(err);
+      return false;
     } finally {
       setBusy(false);
     }
@@ -80,8 +82,8 @@ export default function ManageMenu() {
 
   return (
     <>
-      <p><Link to="/owner">← My restaurants</Link></p>
-      <h1>Menu</h1>
+      <Link to="/owner" className="back-link">← My restaurants</Link>
+      <h1 className="page-title">Menu</h1>
       <ErrorBanner error={error ?? actionError} />
       {loading && <Spinner />}
       {data?.isSample && (
@@ -90,7 +92,8 @@ export default function ManageMenu() {
       {data?.categories.length === 0 && <EmptyState>No menu yet. Add your first dish below.</EmptyState>}
       {data?.categories.map((category) => (
         <div key={category.name}>
-          <h2>{category.name}</h2>
+          <h3 className="menu-category">{category.name}</h3>
+          <div className="table-wrap">
           <table>
             <thead><tr><th>Dish</th><th>Price</th><th>Type</th><th /></tr></thead>
             <tbody>
@@ -99,6 +102,7 @@ export default function ManageMenu() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ))}
 
@@ -106,7 +110,7 @@ export default function ManageMenu() {
         <label>Category<input value={form.category} maxLength={40} required onChange={(e) => setForm({ ...form, category: e.target.value })} /></label>
         <label>Dish<input value={form.name} maxLength={80} required onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
         <label>Price (₹)<input type="number" min={1} max={100000} required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} /></label>
-        <label className="inline-check">
+        <label className="inline">
           <input type="checkbox" checked={form.isVeg} onChange={(e) => setForm({ ...form, isVeg: e.target.checked })} /> Veg
         </label>
         <button type="submit" disabled={busy}>Add dish</button>

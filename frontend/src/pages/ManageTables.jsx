@@ -41,13 +41,14 @@ export default function ManageTables() {
 
   return (
     <>
-      <p><Link to="/owner">← My restaurants</Link></p>
-      <h1>Tables</h1>
+      <Link to="/owner" className="back-link">← My restaurants</Link>
+      <h1 className="page-title">Tables</h1>
       <ErrorBanner error={error ?? actionError} />
       {loading && <Spinner />}
       {data?.length === 0 && <EmptyState>No tables yet. Diners cannot book until you add at least one.</EmptyState>}
       {data?.length > 0 && (
-        <table>
+        <div className="table-wrap">
+          <table>
           <thead><tr><th>Label</th><th>Seats</th><th>Status</th><th /></tr></thead>
           <tbody>
             {data.map((table) => (
@@ -64,7 +65,8 @@ export default function ManageTables() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
 
       <form className="card row" onSubmit={addTable}>

@@ -27,20 +27,25 @@ export default function Register() {
   };
 
   return (
-    <form className="card form narrow" onSubmit={submit}>
-      <h1>Create an account</h1>
-      <ErrorBanner error={error} />
-      <label>Name<input value={form.name} onChange={update('name')} required minLength={2} /></label>
-      <label>Email<input type="email" value={form.email} onChange={update('email')} required autoComplete="email" /></label>
-      <label>Password (min 8 characters)<input type="password" value={form.password} onChange={update('password')} required minLength={8} autoComplete="new-password" /></label>
-      <label>I am a
-        <select value={form.role} onChange={update('role')}>
-          <option value="diner">Diner (I book tables)</option>
-          <option value="owner">Restaurant owner</option>
-        </select>
-      </label>
-      <button type="submit" disabled={busy}>{busy ? 'Creating…' : 'Sign up'}</button>
-      <p className="muted">Already registered? <Link to="/login">Log in</Link></p>
-    </form>
+    <div className="auth">
+      <h1>Create your account</h1>
+      <p className="auth__sub">Diners book tables. Owners list their restaurant and manage reservations.</p>
+      <form className="card form" onSubmit={submit}>
+        <ErrorBanner error={error} />
+        <label>Full name<input value={form.name} onChange={update('name')} required minLength={2} autoComplete="name" /></label>
+        <label>Email<input type="email" value={form.email} onChange={update('email')} required autoComplete="email" /></label>
+        <label>Password<input type="password" value={form.password} onChange={update('password')} required minLength={8} autoComplete="new-password" aria-describedby="pw-hint" />
+          <span id="pw-hint" className="small muted" style={{ fontWeight: 400 }}>At least 8 characters.</span>
+        </label>
+        <label>I want to
+          <select value={form.role} onChange={update('role')}>
+            <option value="diner">Book tables as a diner</option>
+            <option value="owner">List my restaurant as an owner</option>
+          </select>
+        </label>
+        <button type="submit" className="block" disabled={busy}>{busy ? 'Creating account…' : 'Create account'}</button>
+      </form>
+      <p className="muted small">Already registered? <Link to="/login">Log in</Link></p>
+    </div>
   );
 }

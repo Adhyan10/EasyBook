@@ -17,10 +17,10 @@ export default function Menu({ restaurantId }) {
     <section className="card">
       <h2>Menu</h2>
       <ErrorBanner error={error} />
-      {loading && <Spinner />}
+      {loading && !data && <Spinner />}
       {data?.isSample && (
-        <p className="banner banner-warn">
-          Sample menu: dishes marked &quot;sample&quot; are generic for this cuisine, not this restaurant&apos;s actual menu.
+        <p className="banner banner-warn" style={{ marginTop: '0.6rem' }}>
+          Sample menu. Dishes marked &quot;sample&quot; are generic for this cuisine, not this restaurant&apos;s actual menu.
         </p>
       )}
       {data && data.categories.length === 0 && <EmptyState>This restaurant has not added a menu yet.</EmptyState>}
@@ -33,9 +33,9 @@ export default function Menu({ restaurantId }) {
               <div className="menu-name">
                 {item.name}
                 {item.description && <span className="muted"> · {item.description}</span>}
-                {item.isSample && <span className="muted"> · sample</span>}
+                {item.isSample && <span className="muted small"> · sample</span>}
               </div>
-              <strong>{rupees(item.price)}</strong>
+              <span className="menu-price">{rupees(item.price)}</span>
             </div>
           ))}
         </div>

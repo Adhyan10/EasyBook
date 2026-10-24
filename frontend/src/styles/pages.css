@@ -1,0 +1,279 @@
+/* Home */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 2rem;
+  align-items: center;
+  padding: 1rem 0 1.75rem;
+}
+.hero__lede {
+  max-width: 34rem;
+  margin: 0.9rem 0 1.4rem;
+  font-size: 1.1rem;
+  color: var(--ink-2);
+}
+.hero__lede strong {
+  color: var(--ink);
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--gold) 55%, transparent) 0);
+}
+.hero__art {
+  transform: rotate(2deg);
+}
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-shadow: var(--shadow-2);
+}
+.search label {
+  flex: 1 1 9rem;
+}
+.search button {
+  flex: 0 0 auto;
+  min-height: 2.6rem;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* Restaurant cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap: 0.9rem;
+}
+.rcard {
+  display: block;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .rcard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2);
+    color: inherit;
+  }
+}
+.rcard:active {
+  transform: scale(0.985);
+}
+.rcard__cover {
+  position: relative;
+  height: 5.4rem;
+  background-color: var(--cover);
+  background-image: var(--cover-pattern);
+  background-size: var(--cover-size, 16px 16px);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.6rem 0.85rem;
+}
+.rcard__initial {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.92);
+}
+.rcard__body {
+  padding: 0.8rem 0.9rem 0.95rem;
+}
+.rcard__name {
+  margin-bottom: 0.15rem;
+}
+.rcard__meta {
+  font-size: 0.86rem;
+  color: var(--muted);
+  letter-spacing: 0.015em;
+  margin-bottom: 0.5rem;
+}
+.rcard__hours {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+.cover--green {
+  --cover: #2f6b4f;
+  --cover-pattern: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.6px);
+}
+.cover--gold {
+  --cover: #b87d0b;
+  --cover-pattern: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 12px);
+  --cover-size: auto;
+}
+.cover--chilli {
+  --cover: #b3322a;
+  --cover-pattern: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.6px);
+  --cover-size: 14px 14px;
+}
+.cover--violet {
+  --cover: #5b3fa0;
+  --cover-pattern: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.13) 0 2px, transparent 2px 14px);
+  --cover-size: auto;
+}
+.cover--plum {
+  --cover: #7a2f57;
+  --cover-pattern: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2.1px);
+  --cover-size: 18px 18px;
+}
+.cover--ink {
+  --cover: #6c6690;
+  --cover-pattern: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 14px);
+  --cover-size: auto;
+}
+
+/* Cards enter once on page load, staggered a little, then stay still. */
+.cards .rcard {
+  animation: rise var(--t-base) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 35ms);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.pager {
+  margin-top: 1.25rem;
+  justify-content: center;
+}
+
+/* Restaurant page */
+.detail-head {
+  margin-bottom: 1.25rem;
+}
+.detail-head h1 {
+  margin-bottom: 0.4rem;
+}
+.detail-head .chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.chip {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  background: var(--surface);
+}
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22.5rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+.booking-panel {
+  position: sticky;
+  top: 4.75rem;
+  margin: 0;
+}
+.booking-panel h2 {
+  margin-bottom: 0.75rem;
+}
+.summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.9rem;
+  margin: 0.9rem 0;
+  padding: 0.8rem 0.9rem;
+  background: var(--jac-tint);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+}
+.summary dt {
+  color: var(--ink-2);
+}
+.summary dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+}
+.summary .total {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+}
+.countdown {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* Auth */
+.auth {
+  max-width: 26rem;
+  margin: 1.5rem auto 0;
+}
+.auth h1 {
+  font-size: 2rem;
+  margin-bottom: 0.35rem;
+}
+.auth__sub {
+  color: var(--ink-2);
+  margin-bottom: 1.1rem;
+}
+
+.page-title {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+  letter-spacing: -0.025em;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (max-width: 56rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero__art {
+    display: none;
+  }
+  .detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .booking-panel {
+    position: static;
+    order: -1;
+  }
+}
+
+.section-title {
+  margin: 1.4rem 0 0.7rem;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.block {
+  display: block;
+}

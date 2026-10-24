@@ -29,13 +29,16 @@ export default function Login() {
   };
 
   return (
-    <form className="card form narrow" onSubmit={submit}>
-      <h1>Log in</h1>
-      <ErrorBanner error={error} />
-      <label>Email<input type="email" value={form.email} onChange={update('email')} required autoComplete="email" /></label>
-      <label>Password<input type="password" value={form.password} onChange={update('password')} required autoComplete="current-password" /></label>
-      <button type="submit" disabled={busy}>{busy ? 'Logging in…' : 'Log in'}</button>
-      <p className="muted">New here? <Link to="/register">Create an account</Link></p>
-    </form>
+    <div className="auth">
+      <h1>Welcome back</h1>
+      <p className="auth__sub">Log in to see your bookings or manage your restaurant.</p>
+      <form className="card form" onSubmit={submit}>
+        <ErrorBanner error={error} />
+        <label>Email<input type="email" value={form.email} onChange={update('email')} required autoComplete="email" /></label>
+        <label>Password<input type="password" value={form.password} onChange={update('password')} required autoComplete="current-password" /></label>
+        <button type="submit" className="block" disabled={busy}>{busy ? 'Logging in…' : 'Log in'}</button>
+      </form>
+      <p className="muted small">New to EasyBook? <Link to="/register">Create an account</Link></p>
+    </div>
   );
 }

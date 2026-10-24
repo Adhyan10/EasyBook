@@ -60,7 +60,7 @@ export default function OwnerDashboard() {
 
   return (
     <>
-      <h1>My restaurants</h1>
+      <h1 className="page-title">My restaurants</h1>
       <ErrorBanner error={error} />
       {loading && <Spinner />}
       {data?.length === 0 && <EmptyState>You have no restaurants yet. Add one below, then add its tables.</EmptyState>}
@@ -71,10 +71,10 @@ export default function OwnerDashboard() {
             {restaurant.cuisine} · {restaurant.city} · {restaurant.openTime} – {restaurant.closeTime} · {restaurant.slotMinutes} min slots
           </p>
           <div className="row">
-            <Link to={`/owner/restaurants/${restaurant._id}/tables`}>Tables</Link>
-            <Link to={`/owner/restaurants/${restaurant._id}/menu`}>Menu</Link>
-            <Link to={`/owner/restaurants/${restaurant._id}/reservations`}>Reservations</Link>
-            <Link to={`/owner/restaurants/${restaurant._id}/deposits`}>Deposits</Link>
+            <Link className="btn" to={`/owner/restaurants/${restaurant._id}/reservations`}>Today&apos;s reservations</Link>
+            <Link className="btn secondary" to={`/owner/restaurants/${restaurant._id}/tables`}>Tables</Link>
+            <Link className="btn secondary" to={`/owner/restaurants/${restaurant._id}/menu`}>Menu</Link>
+            <Link className="btn secondary" to={`/owner/restaurants/${restaurant._id}/deposits`}>Deposits</Link>
           </div>
         </div>
       ))}

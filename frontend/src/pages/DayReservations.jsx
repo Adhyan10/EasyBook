@@ -52,18 +52,19 @@ export default function DayReservations() {
 
   return (
     <>
-      <p><Link to="/owner">← My restaurants</Link></p>
-      <h1>Reservations</h1>
+      <Link to="/owner" className="back-link">← My restaurants</Link>
+      <h1 className="page-title">Reservations</h1>
       <div className="row">
         <label>Date<input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></label>
-        <Link to={`/owner/restaurants/${id}/deposits`}>Deposits ledger</Link>
+        <Link className="btn secondary" to={`/owner/restaurants/${id}/deposits`}>Deposits ledger</Link>
       </div>
       <p className="muted">{formatDate(date)}</p>
       <ErrorBanner error={error ?? actionError} />
       {loading && <Spinner />}
       {data?.length === 0 && <EmptyState>No reservations for this day.</EmptyState>}
       {data?.length > 0 && (
-        <table>
+        <div className="table-wrap">
+          <table>
           <thead><tr><th>Time</th><th>Guest</th><th>Party</th><th>Table</th><th>Status</th><th>Deposit</th><th /></tr></thead>
           <tbody>
             {data.map((booking) => (
@@ -90,7 +91,8 @@ export default function DayReservations() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
     </>
   );

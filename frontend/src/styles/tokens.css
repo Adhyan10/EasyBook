@@ -1,0 +1,43 @@
+/* Palette: Bengaluru's flowering trees. Jacaranda for action, tabebuia gold for emphasis. */
+:root {
+  --paper: #f6f5fa;
+  --surface: #ffffff;
+  --ink: #1b1730;
+  --ink-2: #4a4560;
+  --muted: #6b667f;
+  --line: #e3e0ee;
+  --line-strong: #cfcadf;
+
+  --jac: #5b3fa0;
+  --jac-deep: #4a3188;
+  --jac-tint: #ece7f8;
+
+  --gold: #f2b53a;
+  --gold-tint: #fff3d6;
+  --gold-ink: #7a5200;
+
+  --leaf: #2f6b4f;
+  --leaf-tint: #e1f1e8;
+  --chilli: #c8372d;
+  --chilli-tint: #fbe5e2;
+
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Motion: strong custom curves, never ease-in on UI. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --t-press: 140ms;
+  --t-fast: 180ms;
+  --t-base: 240ms;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+
+  --shadow-1: 0 1px 2px rgba(27, 23, 48, 0.06), 0 1px 1px rgba(27, 23, 48, 0.04);
+  --shadow-2: 0 1px 2px rgba(27, 23, 48, 0.06), 0 14px 30px -16px rgba(27, 23, 48, 0.3);
+
+  --page-width: 68rem;
+}

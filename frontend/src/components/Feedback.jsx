@@ -1,5 +1,5 @@
 export function Spinner() {
-  return <p className="muted" role="status">Loading…</p>;
+  return <p className="loading" role="status">Loading…</p>;
 }
 
 export function ErrorBanner({ error }) {
@@ -8,5 +8,5 @@ export function ErrorBanner({ error }) {
 }
 
 export function EmptyState({ children }) {
-  return <p className="muted empty">{children}</p>;
+  return <p className="empty muted">{children}</p>;
 }

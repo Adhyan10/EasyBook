@@ -38,8 +38,8 @@ export default function Deposits() {
 
   return (
     <>
-      <p><Link to={`/owner/restaurants/${id}/reservations`}>← Reservations</Link></p>
-      <h1>Deposits</h1>
+      <Link to={`/owner/restaurants/${id}/reservations`} className="back-link">← Reservations</Link>
+      <h1 className="page-title">Deposits</h1>
       <ErrorBanner error={error ?? actionError} />
       {notice && <p className="banner banner-ok" role="status">{notice}</p>}
       {loading && <Spinner />}
@@ -55,7 +55,8 @@ export default function Deposits() {
           </div>
           {data.items.length === 0 && <EmptyState>No deposits yet.</EmptyState>}
           {data.items.length > 0 && (
-            <table>
+            <div className="table-wrap">
+              <table>
               <thead><tr><th>Date</th><th>Time</th><th>Guest</th><th>Amount</th><th>Status</th><th /></tr></thead>
               <tbody>
                 {data.items.map((payment) => (
@@ -78,7 +79,8 @@ export default function Deposits() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           )}
         </>
       )}
