@@ -1,4 +1,11 @@
-import { BOOKING_STATUS, PAISE_PER_RUPEE, PAYMENT_STATUS } from '../constants.js';
+import {
+  BOOKING_STATUS,
+  PAISE_PER_RUPEE,
+  PAYMENT_STATUS,
+  REFUND_RETRY_ATTEMPTS,
+  REFUND_RETRY_DELAY_MS,
+} from '../constants.js';
+import { env } from '../config/env.js';
 import { getGateway } from '../gateway/index.js';
 import { Booking } from '../models/Booking.js';
 import { Payment } from '../models/Payment.js';
@@ -8,6 +15,50 @@ import { DEPOSIT_DECISION } from './refundPolicy.js';
 
 const MONGO_DUPLICATE_KEY = 11000;
 const REFUND_FAILED_MESSAGE = 'The refund could not be processed automatically. Please contact the restaurant.';
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const retryDelayMs = () => (env.NODE_ENV === 'test' ? 0 : REFUND_RETRY_DELAY_MS);
+
+// Gateways sometimes reject a refund requested moments after capture; a short retry usually clears it.
+async function refundWithRetry(payment) {
+  let lastError;
+  for (let attempt = 1; attempt <= REFUND_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      return await getGateway().refund({
+        paymentId: payment.gatewayPaymentId,
+        amountPaise: payment.amount * PAISE_PER_RUPEE,
+      });
+    } catch (err) {
+      lastError = err;
+      logger.error('Gateway refund attempt failed', { paymentId: payment.gatewayPaymentId, attempt, err });
+      if (attempt < REFUND_RETRY_ATTEMPTS) await sleep(retryDelayMs());
+    }
+  }
+  throw lastError;
+}
+
+// Expects the payment to be claimed as REFUNDING already.
+async function finishRefund(payment, bookingId) {
+  const move = (to) => Payment.updateOne({ _id: payment._id, status: PAYMENT_STATUS.REFUNDING }, { $set: { status: to } });
+  try {
+    await refundWithRetry(payment);
+  } catch (err) {
+    await move(PAYMENT_STATUS.REFUND_FAILED);
+    logger.error('Gateway refund failed', { bookingId, err });
+    throw new AppError(502, REFUND_FAILED_MESSAGE);
+  }
+  await move(PAYMENT_STATUS.REFUNDED);
+  return { status: PAYMENT_STATUS.REFUNDED, amount: payment.amount };
+}
+
+export async function retryFailedRefund(bookingId) {
+  const claimed = await Payment.findOneAndUpdate(
+    { booking: bookingId, status: PAYMENT_STATUS.REFUND_FAILED },
+    { $set: { status: PAYMENT_STATUS.REFUNDING } },
+  );
+  if (!claimed) throw new AppError(409, 'There is no failed refund to retry for this booking');
+  return finishRefund(claimed, bookingId);
+}
 
 export async function settleDeposit(bookingId, decision) {
   const payment = await Payment.findOne({ booking: bookingId, status: PAYMENT_STATUS.PAID });
@@ -27,19 +78,7 @@ export async function settleDeposit(bookingId, decision) {
     { $set: { status: PAYMENT_STATUS.REFUNDING } },
   );
   if (!claimed) return { status: 'none', amount: 0 };
-
-  try {
-    await getGateway().refund({
-      paymentId: payment.gatewayPaymentId,
-      amountPaise: payment.amount * PAISE_PER_RUPEE,
-    });
-  } catch (err) {
-    await move(PAYMENT_STATUS.REFUNDING, PAYMENT_STATUS.REFUND_FAILED);
-    logger.error('Gateway refund failed', { bookingId, err });
-    throw new AppError(502, REFUND_FAILED_MESSAGE);
-  }
-  await move(PAYMENT_STATUS.REFUNDING, PAYMENT_STATUS.REFUNDED);
-  return { status: PAYMENT_STATUS.REFUNDED, amount: payment.amount };
+  return finishRefund(payment, bookingId);
 }
 
 async function confirmBooking(bookingId) {

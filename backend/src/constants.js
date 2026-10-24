@@ -11,6 +11,8 @@ export const MS_PER_MINUTE = 60_000;
 export const MS_PER_HOUR = 3_600_000;
 export const PAISE_PER_RUPEE = 100;
 export const MAX_LIVE_HOLDS_PER_DINER = 3;
+export const REFUND_RETRY_ATTEMPTS = 3;
+export const REFUND_RETRY_DELAY_MS = 2000;
 
 export const DEMO_OWNER_EMAIL = 'owner@demo.com';
 export const MIN_SEED_PASSWORD_LENGTH = 8;

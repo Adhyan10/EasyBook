@@ -1,7 +1,7 @@
 import { PAYMENT_STATUS } from '../constants.js';
 import { Booking } from '../models/Booking.js';
 import { Payment } from '../models/Payment.js';
-import { adjustDeposit, changeStatusAsOwner } from '../services/bookingLifecycleService.js';
+import { adjustDeposit, changeStatusAsOwner, retryRefundAsOwner } from '../services/bookingLifecycleService.js';
 import { withDeposits } from '../services/bookingView.js';
 import { summarizeDeposits } from '../services/depositSummary.js';
 import { expireStaleHolds } from '../services/holdExpiry.js';
@@ -48,4 +48,9 @@ export const deposits = asyncHandler(async (req, res) => {
     .populate({ path: 'booking', select: 'date slotStart partySize status diner', populate: { path: 'diner', select: 'name' } })
     .sort({ createdAt: -1 });
   sendOk(res, { summary: summarizeDeposits(payments), items: payments.slice(0, LEDGER_PAGE_SIZE) });
+});
+
+export const retryRefund = asyncHandler(async (req, res) => {
+  const deposit = await retryRefundAsOwner({ bookingId: req.valid.params.id, ownerId: req.user._id });
+  sendOk(res, { deposit });
 });

@@ -4,7 +4,7 @@ import { Payment } from '../models/Payment.js';
 import { AppError } from '../utils/AppError.js';
 import { assertTransition } from './bookingStateMachine.js';
 import { getOwnedRestaurant } from './ownership.js';
-import { settleDeposit } from './paymentService.js';
+import { retryFailedRefund, settleDeposit } from './paymentService.js';
 import { refundPolicy } from './refundPolicy.js';
 import { slotInstant } from './slots.js';
 
@@ -71,4 +71,10 @@ export async function adjustDeposit({ bookingId, ownerId }, now = new Date()) {
   );
   if (!payment) throw new AppError(409, 'This deposit is not available to adjust');
   return payment;
+}
+
+export async function retryRefundAsOwner({ bookingId, ownerId }) {
+  const booking = await loadBooking(bookingId);
+  await getOwnedRestaurant(booking.restaurant, ownerId);
+  return retryFailedRefund(booking._id);
 }

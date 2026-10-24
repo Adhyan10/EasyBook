@@ -1,6 +1,8 @@
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/app.js';
+import { resetGateway, setGateway } from '../../src/gateway/index.js';
+import { createMockGateway } from '../../src/gateway/mockGateway.js';
 import { Payment } from '../../src/models/Payment.js';
 import { changeStatusAsOwner } from '../../src/services/bookingLifecycleService.js';
 import { clearDb, closeTestDb, connectTestDb } from '../helpers/db.js';
@@ -12,6 +14,7 @@ const AFTER_SLOT = new Date('2099-06-15T14:00:00Z'); // slot starts 13:30 UTC
 beforeAll(connectTestDb);
 afterAll(closeTestDb);
 beforeEach(clearDb);
+afterEach(resetGateway);
 
 async function setup(seed = {}) {
   const owner = await createUser('owner');
@@ -132,5 +135,40 @@ describe('GET /api/restaurants/:id/deposits', () => {
 
     const other = await createUser('owner');
     expect((await request(app).get(`/api/restaurants/${restaurant._id}/deposits`).set(authHeader(other))).status).toBe(403);
+  });
+});
+
+describe('PATCH /api/bookings/:id/retry-refund', () => {
+  const retry = (user, booking) => request(app).patch(`/api/bookings/${booking._id}/retry-refund`).set(authHeader(user));
+
+  it('lets the owner retry a failed refund until it succeeds', async () => {
+    const { owner, booking, payment } = await setup({ bookingStatus: 'cancelled', paymentStatus: 'refund_failed' });
+    const res = await retry(owner, booking);
+    expect(res.status).toBe(200);
+    expect(res.body.data.deposit.status).toBe('refunded');
+    expect((await Payment.findById(payment._id)).status).toBe('refunded');
+  });
+
+  it('keeps the payment as refund_failed when the gateway still fails', async () => {
+    const { owner, booking, payment } = await setup({ bookingStatus: 'cancelled', paymentStatus: 'refund_failed' });
+    setGateway({ ...createMockGateway(), refund: async () => { throw new Error('still down'); } });
+    expect((await retry(owner, booking)).status).toBe(502);
+    expect((await Payment.findById(payment._id)).status).toBe('refund_failed');
+  });
+
+  it('refuses payments that are not in a failed-refund state', async () => {
+    const paid = await setup();
+    expect((await retry(paid.owner, paid.booking)).status).toBe(409);
+    const done = await setup({ bookingStatus: 'cancelled', paymentStatus: 'refunded' });
+    expect((await retry(done.owner, done.booking)).status).toBe(409);
+  });
+
+  it('forbids other owners and diners, and rejects malformed ids', async () => {
+    const { booking, diner } = await setup({ bookingStatus: 'cancelled', paymentStatus: 'refund_failed' });
+    const other = await createUser('owner');
+    expect((await retry(other, booking)).status).toBe(403);
+    expect((await retry(diner, booking)).status).toBe(403);
+    const bad = await request(app).patch('/api/bookings/nope/retry-refund').set(authHeader(other));
+    expect(bad.status).toBe(400);
   });
 });

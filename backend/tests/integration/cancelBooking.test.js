@@ -82,6 +82,33 @@ describe('PATCH /api/bookings/:id/cancel', () => {
     expect((await Payment.findById(payment._id)).status).toBe('refunded');
   });
 
+  it('retries a transient refund failure and still refunds', async () => {
+    const { diner, booking, payment } = await setup();
+    let calls = 0;
+    setGateway({
+      ...createMockGateway(),
+      refund: async () => {
+        calls += 1;
+        if (calls < 3) throw new Error('temporary gateway error');
+        return { refundId: 'rfnd_after_retry' };
+      },
+    });
+    const res = await cancel(diner, booking);
+    expect(res.status).toBe(200);
+    expect(calls).toBe(3);
+    expect((await Payment.findById(payment._id)).status).toBe('refunded');
+  });
+
+  it('gives up after three attempts and marks the refund failed', async () => {
+    const { diner, booking, payment } = await setup();
+    let calls = 0;
+    setGateway({ ...createMockGateway(), refund: async () => { calls += 1; throw new Error('down'); } });
+    const res = await cancel(diner, booking);
+    expect(res.status).toBe(502);
+    expect(calls).toBe(3);
+    expect((await Payment.findById(payment._id)).status).toBe('refund_failed');
+  });
+
   it('reports 502 but still cancels when the refund fails', async () => {
     const { diner, booking, payment } = await setup();
     setGateway({ ...createMockGateway(), refund: async () => { throw new Error('boom'); } });

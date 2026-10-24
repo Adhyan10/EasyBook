@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ROLES } from '../constants.js';
 import { cancel, create, mine } from '../controllers/bookingController.js';
-import { adjust, changeStatus, dayBookings, deposits } from '../controllers/ownerBookingController.js';
+import { adjust, changeStatus, dayBookings, deposits, retryRefund } from '../controllers/ownerBookingController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { createBookingBody, dayQuery, ownerStatusBody } from '../validation/bookingSchemas.js';
@@ -19,3 +19,4 @@ bookingRoutes.get('/restaurants/:id/bookings', ...ownerOnly, validate({ params: 
 bookingRoutes.get('/restaurants/:id/deposits', ...ownerOnly, validate({ params: idParam }), deposits);
 bookingRoutes.patch('/bookings/:id/status', ...ownerOnly, validate({ params: idParam, body: ownerStatusBody }), changeStatus);
 bookingRoutes.patch('/bookings/:id/adjust', ...ownerOnly, validate({ params: idParam }), adjust);
+bookingRoutes.patch('/bookings/:id/retry-refund', ...ownerOnly, validate({ params: idParam }), retryRefund);

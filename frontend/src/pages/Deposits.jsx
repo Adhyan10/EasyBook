@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState, ErrorBanner, Spinner } from '../components/Feedback.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -15,13 +16,32 @@ const SUMMARY_CARDS = Object.freeze([
 export default function Deposits() {
   const { id } = useParams();
   const { call } = useAuth();
-  const { data, error, loading } = useLoad(() => call(`/restaurants/${id}/deposits`), [id]);
+  const { data, error, loading, reload } = useLoad(() => call(`/restaurants/${id}/deposits`), [id]);
+  const [busyId, setBusyId] = useState(null);
+  const [actionError, setActionError] = useState(null);
+  const [notice, setNotice] = useState(null);
+
+  const retryRefund = async (payment) => {
+    setBusyId(payment._id);
+    setActionError(null);
+    setNotice(null);
+    try {
+      await call(`/bookings/${payment.booking._id}/retry-refund`, { method: 'PATCH' });
+      setNotice('Refund sent to the payment gateway.');
+    } catch (err) {
+      setActionError(err);
+    } finally {
+      setBusyId(null);
+      reload();
+    }
+  };
 
   return (
     <>
       <p><Link to={`/owner/restaurants/${id}/reservations`}>← Reservations</Link></p>
       <h1>Deposits</h1>
-      <ErrorBanner error={error} />
+      <ErrorBanner error={error ?? actionError} />
+      {notice && <p className="banner banner-ok" role="status">{notice}</p>}
       {loading && <Spinner />}
       {data && (
         <>
@@ -36,7 +56,7 @@ export default function Deposits() {
           {data.items.length === 0 && <EmptyState>No deposits yet.</EmptyState>}
           {data.items.length > 0 && (
             <table>
-              <thead><tr><th>Date</th><th>Time</th><th>Guest</th><th>Amount</th><th>Status</th></tr></thead>
+              <thead><tr><th>Date</th><th>Time</th><th>Guest</th><th>Amount</th><th>Status</th><th /></tr></thead>
               <tbody>
                 {data.items.map((payment) => (
                   <tr key={payment._id}>
@@ -47,6 +67,13 @@ export default function Deposits() {
                     <td>
                       <span className={`badge ${payment.status}`}>{DEPOSIT_LABEL[payment.status]}</span>
                       {payment.adjustedAt && ' adjusted'}
+                    </td>
+                    <td>
+                      {payment.status === 'refund_failed' && payment.booking && (
+                        <button type="button" disabled={busyId === payment._id} onClick={() => retryRefund(payment)}>
+                          {busyId === payment._id ? 'Retrying…' : 'Retry refund'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
