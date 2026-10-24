@@ -1,4 +1,10 @@
-import { BOOKING_STATUS, HOLD_MINUTES, MS_PER_MINUTE, PAISE_PER_RUPEE } from '../constants.js';
+import {
+  BOOKING_STATUS,
+  HOLD_MINUTES,
+  MAX_LIVE_HOLDS_PER_DINER,
+  MS_PER_MINUTE,
+  PAISE_PER_RUPEE,
+} from '../constants.js';
 import { getGateway } from '../gateway/index.js';
 import { Booking } from '../models/Booking.js';
 import { Payment } from '../models/Payment.js';
@@ -14,6 +20,17 @@ const MONGO_DUPLICATE_KEY = 11000;
 function assertBookableSlot(restaurant, date, slotStart, now) {
   if (!isOnGrid(slotStart, restaurant)) throw new AppError(422, 'That time is not a bookable slot');
   if (slotInstant(date, slotStart) <= now) throw new AppError(422, 'That slot is in the past');
+}
+
+async function assertUnderHoldCap(dinerId, now) {
+  const liveHolds = await Booking.countDocuments({
+    diner: dinerId,
+    status: BOOKING_STATUS.PENDING_PAYMENT,
+    holdExpiresAt: { $gt: now },
+  });
+  if (liveHolds >= MAX_LIVE_HOLDS_PER_DINER) {
+    throw new AppError(429, 'You have too many unpaid holds. Complete or wait out a pending payment first.');
+  }
 }
 
 async function holdFirstFreeTable({ tables, restaurant, diner, date, slotStart, partySize, now }) {
@@ -67,6 +84,7 @@ export async function createBooking({ diner, restaurantId, date, slotStart, part
 
   await expireStaleHolds({ restaurant: restaurant._id, date }, now);
   await releaseDinerHolds({ diner: diner._id, restaurant: restaurant._id, date, slotStart });
+  await assertUnderHoldCap(diner._id, now);
 
   const tables = await Table.find({
     restaurant: restaurant._id,

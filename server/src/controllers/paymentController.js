@@ -9,7 +9,8 @@ import { sendOk } from '../utils/respond.js';
 const CAPTURED_EVENT = 'payment.captured';
 
 function respondWithOutcome(res, { outcome, booking }) {
-  if (outcome === 'refunded') {
+  const lostTheSlot = outcome === 'already_processed' && booking?.status === 'expired';
+  if (outcome === 'refunded' || lostTheSlot) {
     throw new AppError(409, 'Your hold expired and the slot was taken. Your payment has been refunded.');
   }
   if (outcome === 'refund_failed') {

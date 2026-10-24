@@ -10,6 +10,12 @@ function requireValue(name, value) {
 
 const gateway = read('GATEWAY', 'mock');
 
+// The mock gateway signs with a known default secret and lets any diner "pay" for free,
+// so a production deploy must opt in to it deliberately (demo-only).
+if (isProduction && gateway === 'mock' && read('ALLOW_MOCK_GATEWAY') !== 'true') {
+  throw new Error('GATEWAY=mock in production requires ALLOW_MOCK_GATEWAY=true (demo only)');
+}
+
 export const env = Object.freeze({
   NODE_ENV: read('NODE_ENV', 'development'),
   PORT: Number(read('PORT', '5000')),

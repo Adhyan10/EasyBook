@@ -61,7 +61,11 @@ export default function RestaurantDetail() {
       setHeld(hold);
       const payment = await collectPayment({ order: hold.order, bookingId: hold.booking._id, user, call });
       const result = await call('/payments/verify', { method: 'POST', body: payment });
-      setConfirmed(result.booking);
+      if (result.booking?.status === 'confirmed') {
+        setConfirmed(result.booking);
+      } else {
+        setError(new Error('Payment received. We are still confirming your table. Check My bookings in a moment.'));
+      }
     } catch (err) {
       setError(err);
       if (err.status === SLOT_TAKEN) checkAvailability();

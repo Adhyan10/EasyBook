@@ -13,12 +13,20 @@ export async function settleDeposit(bookingId, decision) {
   const payment = await Payment.findOne({ booking: bookingId, status: PAYMENT_STATUS.PAID });
   if (!payment) return { status: 'none', amount: 0 };
 
-  const transition = (status) => Payment.updateOne({ _id: payment._id, status: PAYMENT_STATUS.PAID }, { $set: { status } });
+  const move = (from, to) => Payment.updateOne({ _id: payment._id, status: from }, { $set: { status: to } });
 
   if (decision === DEPOSIT_DECISION.FORFEIT) {
-    await transition(PAYMENT_STATUS.FORFEITED);
+    await move(PAYMENT_STATUS.PAID, PAYMENT_STATUS.FORFEITED);
     return { status: PAYMENT_STATUS.FORFEITED, amount: payment.amount };
   }
+
+  // Claim the payment before touching the gateway so a crash or a concurrent settle
+  // can never refund (or forfeit) the same money twice.
+  const claimed = await Payment.findOneAndUpdate(
+    { _id: payment._id, status: PAYMENT_STATUS.PAID },
+    { $set: { status: PAYMENT_STATUS.REFUNDING } },
+  );
+  if (!claimed) return { status: 'none', amount: 0 };
 
   try {
     await getGateway().refund({
@@ -26,11 +34,11 @@ export async function settleDeposit(bookingId, decision) {
       amountPaise: payment.amount * PAISE_PER_RUPEE,
     });
   } catch (err) {
-    await transition(PAYMENT_STATUS.REFUND_FAILED);
+    await move(PAYMENT_STATUS.REFUNDING, PAYMENT_STATUS.REFUND_FAILED);
     logger.error('Gateway refund failed', { bookingId, err });
     throw new AppError(502, REFUND_FAILED_MESSAGE);
   }
-  await transition(PAYMENT_STATUS.REFUNDED);
+  await move(PAYMENT_STATUS.REFUNDING, PAYMENT_STATUS.REFUNDED);
   return { status: PAYMENT_STATUS.REFUNDED, amount: payment.amount };
 }
 

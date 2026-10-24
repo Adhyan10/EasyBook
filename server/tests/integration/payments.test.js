@@ -169,6 +169,28 @@ describe('late payments', () => {
   });
 });
 
+describe('verify after the webhook already refunded', () => {
+  it('tells the diner they were refunded instead of confirming', async () => {
+    const { restaurant, diner } = await setup();
+    const { bookingId, orderId } = await hold(diner, restaurant);
+    await Booking.updateOne({ _id: bookingId }, { holdExpiresAt: new Date('2000-01-01') });
+    await expireStaleHolds();
+    const other = await createUser('diner');
+    await request(app)
+      .post('/api/bookings')
+      .set(authHeader(other))
+      .send({ restaurantId: String(restaurant._id), date: DATE, slotStart: '19:00', partySize: 2 });
+
+    const paid = getGateway().simulatePayment(orderId);
+    const hookRes = await sendWebhook(webhookBody(orderId, paid.paymentId));
+    expect(hookRes.body.data.outcome).toBe('refunded');
+
+    const res = await verify(diner, paid);
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatch(/refunded/i);
+  });
+});
+
 describe('POST /api/payments/mock-pay', () => {
   it("returns a signature that verifies, only for the booking's diner", async () => {
     const { restaurant, diner } = await setup();

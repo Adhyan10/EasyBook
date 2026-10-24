@@ -28,6 +28,7 @@ export const DEPOSIT_LABEL = Object.freeze({
   created: 'Not paid',
   paid: 'Paid',
   failed: 'Failed',
+  refunding: 'Refunding',
   refunded: 'Refunded',
   forfeited: 'Forfeited',
   refund_failed: 'Refund failed',

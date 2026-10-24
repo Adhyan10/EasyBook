@@ -66,6 +66,22 @@ describe('PATCH /api/bookings/:id/cancel', () => {
     expect(bad.status).toBe(400);
   });
 
+  it('marks the payment refunding before calling the gateway so a crash cannot double-refund', async () => {
+    const { diner, booking, payment } = await setup();
+    let statusDuringRefund;
+    setGateway({
+      ...createMockGateway(),
+      refund: async () => {
+        statusDuringRefund = (await Payment.findById(payment._id)).status;
+        return { refundId: 'rfnd_test' };
+      },
+    });
+    const res = await cancel(diner, booking);
+    expect(res.status).toBe(200);
+    expect(statusDuringRefund).toBe('refunding');
+    expect((await Payment.findById(payment._id)).status).toBe('refunded');
+  });
+
   it('reports 502 but still cancels when the refund fails', async () => {
     const { diner, booking, payment } = await setup();
     setGateway({ ...createMockGateway(), refund: async () => { throw new Error('boom'); } });

@@ -69,6 +69,7 @@ Run the tests: `cd server && npm test` (downloads an in-memory MongoDB on first 
 | `JWT_EXPIRES_IN` | server | Token lifetime, default `7d` |
 | `CLIENT_ORIGIN` | server | Allowed CORS origin(s), comma separated |
 | `GATEWAY` | server | `mock` (no keys needed) or `razorpay` |
+| `ALLOW_MOCK_GATEWAY` | server | Must be `true` to run `GATEWAY=mock` with `NODE_ENV=production`. Demo only: the mock gateway lets any diner "pay" for free |
 | `MOCK_GATEWAY_SECRET` | server | Signing secret for the mock gateway |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | server | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
 | `VITE_API_URL` | client | API base URL, e.g. `https://[api-url]/api` |

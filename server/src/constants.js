@@ -10,6 +10,7 @@ export const HOLD_SWEEP_INTERVAL_MS = 60_000;
 export const MS_PER_MINUTE = 60_000;
 export const MS_PER_HOUR = 3_600_000;
 export const PAISE_PER_RUPEE = 100;
+export const MAX_LIVE_HOLDS_PER_DINER = 3;
 
 export const ROLES = Object.freeze({ DINER: 'diner', OWNER: 'owner' });
 
@@ -33,6 +34,7 @@ export const PAYMENT_STATUS = Object.freeze({
   CREATED: 'created',
   PAID: 'paid',
   FAILED: 'failed',
+  REFUNDING: 'refunding',
   REFUNDED: 'refunded',
   FORFEITED: 'forfeited',
   REFUND_FAILED: 'refund_failed',

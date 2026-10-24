@@ -136,6 +136,28 @@ describe('POST /api/bookings', () => {
     expect(await Booking.countDocuments({ status: 'expired' })).toBe(1);
   });
 
+  it('caps unpaid holds per diner so one account cannot lock a whole day', async () => {
+    const { restaurant } = await world([4, 4, 4, 4, 4]);
+    const diner = await createUser('diner');
+    for (const slotStart of ['16:00', '17:00', '18:00']) {
+      expect((await book(diner, restaurant, { slotStart })).status).toBe(201);
+    }
+    const blocked = await book(diner, restaurant, { slotStart: '19:00' });
+    expect(blocked.status).toBe(429);
+    expect(blocked.body.error).toMatch(/unpaid/i);
+
+    const other = await createUser('diner');
+    expect((await book(other, restaurant, { slotStart: '19:00' })).status).toBe(201);
+  });
+
+  it('frees the cap once earlier holds expire', async () => {
+    const { restaurant } = await world([4, 4, 4, 4]);
+    const diner = await createUser('diner');
+    for (const slotStart of ['16:00', '17:00', '18:00']) await book(diner, restaurant, { slotStart });
+    await Booking.updateMany({ diner: diner._id }, { holdExpiresAt: new Date('2000-01-01') });
+    expect((await book(diner, restaurant, { slotStart: '19:00' })).status).toBe(201);
+  });
+
   it('rolls back the hold and returns 502 when the gateway is down', async () => {
     const { restaurant } = await world([4]);
     setGateway({ ...createMockGateway(), createOrder: async () => { throw new Error('gateway down'); } });
