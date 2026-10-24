@@ -18,7 +18,6 @@ export default function RestaurantCard({ restaurant, index = 0 }) {
         <p className="rcard__meta">{restaurant.cuisine} · {place}</p>
         <div className="rcard__hours">
           <span>{restaurant.openTime} – {restaurant.closeTime}</span>
-          {restaurant.isSample && <span className="badge sample">sample hours</span>}
         </div>
       </div>
     </Link>
