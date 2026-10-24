@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Booking } from '../../src/models/Booking.js';
+import { MenuItem } from '../../src/models/MenuItem.js';
 import { Payment } from '../../src/models/Payment.js';
 import { Restaurant } from '../../src/models/Restaurant.js';
 import { Table } from '../../src/models/Table.js';
@@ -58,6 +59,16 @@ export async function seedConfirmedBooking({
     status: paymentStatus,
   });
   return { booking, payment };
+}
+
+export function createMenuItem(restaurant, overrides = {}) {
+  return MenuItem.create({
+    restaurant: restaurant._id,
+    category: 'Mains',
+    name: `Item ${nextId()}`,
+    price: 100,
+    ...overrides,
+  });
 }
 
 export function createTable(restaurant, overrides = {}) {
