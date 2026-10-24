@@ -72,6 +72,7 @@ export default function OwnerDashboard() {
           </p>
           <div className="row">
             <Link to={`/owner/restaurants/${restaurant._id}/tables`}>Tables</Link>
+            <Link to={`/owner/restaurants/${restaurant._id}/menu`}>Menu</Link>
             <Link to={`/owner/restaurants/${restaurant._id}/reservations`}>Reservations</Link>
             <Link to={`/owner/restaurants/${restaurant._id}/deposits`}>Deposits</Link>
           </div>

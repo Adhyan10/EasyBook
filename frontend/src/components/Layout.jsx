@@ -31,6 +31,10 @@ export default function Layout() {
         </nav>
       </header>
       <main className="container"><Outlet /></main>
+      <footer className="footer muted">
+        Restaurant data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL).
+        Seeded menus, tables and hours are sample data.
+      </footer>
     </>
   );
 }

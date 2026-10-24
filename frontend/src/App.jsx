@@ -6,6 +6,7 @@ import DayReservations from './pages/DayReservations.jsx';
 import Deposits from './pages/Deposits.jsx';
 import Login from './pages/Login.jsx';
 import ManageTables from './pages/ManageTables.jsx';
+import ManageMenu from './pages/ManageMenu.jsx';
 import MyBookings from './pages/MyBookings.jsx';
 import OwnerDashboard from './pages/OwnerDashboard.jsx';
 import Register from './pages/Register.jsx';
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/owner/restaurants/:id/tables" element={<ProtectedRoute role="owner"><ManageTables /></ProtectedRoute>} />
         <Route path="/owner/restaurants/:id/reservations" element={<ProtectedRoute role="owner"><DayReservations /></ProtectedRoute>} />
         <Route path="/owner/restaurants/:id/deposits" element={<ProtectedRoute role="owner"><Deposits /></ProtectedRoute>} />
+        <Route path="/owner/restaurants/:id/menu" element={<ProtectedRoute role="owner"><ManageMenu /></ProtectedRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<p className="muted">Page not found.</p>} />

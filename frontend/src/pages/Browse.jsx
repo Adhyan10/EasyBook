@@ -30,7 +30,7 @@ export default function Browse() {
     <>
       <h1>Find a table</h1>
       <form className="row card" onSubmit={search}>
-        <label>Name<input value={filters.q} onChange={update('q')} placeholder="e.g. Spice" /></label>
+        <label>Name<input value={filters.q} onChange={update('q')} placeholder="Name or area, e.g. Spice" /></label>
         <label>City<input value={filters.city} onChange={update('city')} placeholder="e.g. Pune" /></label>
         <label>Cuisine<input value={filters.cuisine} onChange={update('cuisine')} placeholder="e.g. Indian" /></label>
         <button type="submit">Search</button>
@@ -43,7 +43,9 @@ export default function Browse() {
         {data?.items.map((restaurant) => (
           <Link key={restaurant._id} to={`/restaurants/${restaurant._id}`} className="card">
             <h2>{restaurant.name}</h2>
-            <p className="muted">{restaurant.cuisine} · {restaurant.city}</p>
+            <p className="muted">
+              {restaurant.cuisine} · {restaurant.area ? `${restaurant.area}, ` : ''}{restaurant.city}
+            </p>
             <p>{restaurant.openTime} – {restaurant.closeTime}</p>
           </Link>
         ))}

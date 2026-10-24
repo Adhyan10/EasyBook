@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ErrorBanner, Spinner } from '../components/Feedback.jsx';
+import Menu from '../components/Menu.jsx';
 import SlotPicker from '../components/SlotPicker.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCountdown } from '../hooks/useCountdown.js';
@@ -84,8 +85,15 @@ export default function RestaurantDetail() {
   return (
     <>
       <h1>{place.name}</h1>
-      <p className="muted">{place.cuisine} · {place.address}, {place.city} · {place.openTime} – {place.closeTime}</p>
+      <p className="muted">
+        {place.cuisine} · {place.address}{place.address.includes(place.city) ? '' : `, ${place.city}`} · {place.openTime} – {place.closeTime}
+      </p>
+      {place.isSample && (
+        <p className="muted">Listing from OpenStreetMap. Hours and tables are sample data.</p>
+      )}
       {place.description && <p>{place.description}</p>}
+
+      <Menu restaurantId={id} />
 
       {confirmed ? (
         <Confirmation booking={confirmed} restaurant={place} />
