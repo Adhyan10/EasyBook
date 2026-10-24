@@ -397,3 +397,13 @@ td button {
 .veg-mark.nonveg {
   color: var(--chilli);
 }
+
+/* Action cells reuse the .row helper in JSX; keep them real table cells so columns stay aligned. */
+td.row {
+  display: table-cell;
+  white-space: nowrap;
+  text-align: right;
+}
+td.row > * + * {
+  margin-left: 0.4rem;
+}
