@@ -9,6 +9,10 @@ const restaurantSchema = new mongoose.Schema(
     city: { type: String, required: true, trim: true },
     address: { type: String, required: true, trim: true },
     description: { type: String, trim: true, default: '' },
+    area: { type: String, trim: true, maxlength: 60, default: '' },
+    source: { type: String, enum: ['owner', 'osm'], default: 'owner' },
+    externalId: { type: String, trim: true },
+    isSample: { type: Boolean, default: false },
     openTime: { type: String, required: true },
     closeTime: { type: String, required: true },
     slotMinutes: { type: Number, required: true, min: MIN_SLOT_MINUTES, max: MAX_SLOT_MINUTES },
@@ -18,5 +22,6 @@ const restaurantSchema = new mongoose.Schema(
 );
 
 restaurantSchema.index({ city: 1, cuisine: 1 });
+restaurantSchema.index({ externalId: 1 }, { unique: true, sparse: true });
 
 export const Restaurant = mongoose.models.Restaurant ?? mongoose.model('Restaurant', restaurantSchema);

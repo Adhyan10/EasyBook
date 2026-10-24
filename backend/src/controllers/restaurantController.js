@@ -20,7 +20,7 @@ export const listRestaurants = asyncHandler(async (req, res) => {
   const filter = {
     ...(city && { city: exactI(city) }),
     ...(cuisine && { cuisine: exactI(cuisine) }),
-    ...(q && { name: new RegExp(escapeRegex(q), 'i') }),
+    ...(q && { $or: [{ name: new RegExp(escapeRegex(q), 'i') }, { area: new RegExp(escapeRegex(q), 'i') }] }),
   };
   const [items, total] = await Promise.all([
     Restaurant.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit),

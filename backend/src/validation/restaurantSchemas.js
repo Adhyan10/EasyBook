@@ -9,6 +9,7 @@ const base = z.object({
   city: z.string().trim().min(2).max(40),
   address: z.string().trim().min(3).max(160),
   description: z.string().trim().max(500).optional(),
+  area: z.string().trim().max(60).optional(),
   openTime: timeString,
   closeTime: timeString,
   slotMinutes: z.number().int().min(MIN_SLOT_MINUTES).max(MAX_SLOT_MINUTES),
