@@ -52,32 +52,32 @@ Requires Node 20+ and a MongoDB (local or Atlas).
 
 ```bash
 git clone [repo-url] && cd EasyBook
-cd server && cp .env.example .env     # fill in MONGO_URI and JWT_SECRET
+cd backend && cp .env.example .env     # fill in MONGO_URI and JWT_SECRET
 npm install && npm run dev            # API on http://localhost:5000
-cd ../client && cp .env.example .env
+cd ../frontend && cp .env.example .env
 npm install && npm run dev            # app on http://localhost:5173
 ```
 
-Run the tests: `cd server && npm test` (downloads an in-memory MongoDB on first run). Coverage: `npm run coverage`.
+Run the tests: `cd backend && npm test` (downloads an in-memory MongoDB on first run). Coverage: `npm run coverage`.
 
 ## Environment Variables
 
 | Variable | Where | Purpose |
 |---|---|---|
-| `MONGO_URI` | server | MongoDB connection string |
-| `JWT_SECRET` | server | Signs login tokens (required in production) |
-| `JWT_EXPIRES_IN` | server | Token lifetime, default `7d` |
-| `CLIENT_ORIGIN` | server | Allowed CORS origin(s), comma separated |
-| `GATEWAY` | server | `mock` (no keys needed) or `razorpay` |
-| `ALLOW_MOCK_GATEWAY` | server | Must be `true` to run `GATEWAY=mock` with `NODE_ENV=production`. Demo only: the mock gateway lets any diner "pay" for free |
-| `MOCK_GATEWAY_SECRET` | server | Signing secret for the mock gateway |
-| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | server | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
-| `VITE_API_URL` | client | API base URL, e.g. `https://[api-url]/api` |
+| `MONGO_URI` | backend | MongoDB connection string |
+| `JWT_SECRET` | backend | Signs login tokens (required in production) |
+| `JWT_EXPIRES_IN` | backend | Token lifetime, default `7d` |
+| `CLIENT_ORIGIN` | backend | Allowed CORS origin(s), comma separated |
+| `GATEWAY` | backend | `mock` (no keys needed) or `razorpay` |
+| `ALLOW_MOCK_GATEWAY` | backend | Must be `true` to run `GATEWAY=mock` with `NODE_ENV=production`. Demo only: the mock gateway lets any diner "pay" for free |
+| `MOCK_GATEWAY_SECRET` | backend | Signing secret for the mock gateway |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | backend | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
+| `VITE_API_URL` | frontend | API base URL, e.g. `https://[api-url]/api` |
 
 ## Deployment
 
 - **Database:** MongoDB Atlas free cluster.
-- **API:** Render web service, root `server`, build `npm install`, start `npm start`.
-- **Client:** Vercel, root `client`, framework Vite.
+- **Backend:** Render web service, root `backend`, build `npm install`, start `npm start`.
+- **Frontend:** Vercel, root `frontend`, framework Vite.
 - Razorpay webhook (when `GATEWAY=razorpay`): `https://[api-url]/api/payments/webhook`, event `payment.captured`.
 - The free Render tier sleeps when idle. Hold expiry is also checked lazily on every read, so correctness does not depend on the background job.
