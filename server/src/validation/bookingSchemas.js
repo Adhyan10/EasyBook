@@ -7,6 +7,12 @@ export const availabilityQuery = z.object({
   partySize: z.coerce.number().int().min(1).max(MAX_PARTY_SIZE),
 });
 
+export const ownerStatusBody = z.object({
+  status: z.enum(['seated', 'completed', 'no_show', 'cancelled']),
+});
+
+export const dayQuery = z.object({ date: dateString });
+
 export const createBookingBody = z.object({
   restaurantId: objectId,
   date: dateString,
