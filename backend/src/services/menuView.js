@@ -5,7 +5,8 @@ export function groupMenu(items) {
     byCategory.set(item.category, [...bucket, item]);
   }
   return {
-    isSample: items.length > 0 && items.every((item) => item.isSample),
+    // Any remaining sample dish keeps the banner: a mixed menu must not read as the restaurant's real menu.
+    isSample: items.some((item) => item.isSample),
     categories: [...byCategory].map(([name, grouped]) => ({ name, items: grouped })),
   };
 }

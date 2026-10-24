@@ -9,6 +9,7 @@ import { tableLayoutFor } from '../../src/seed/tableLayout.js';
 import { clearDb, closeTestDb, connectTestDb } from '../helpers/db.js';
 
 const elements = JSON.parse(readFileSync(new URL('../fixtures/osm-sample.json', import.meta.url), 'utf8'));
+const PW = 'demo-pass-123';
 const EXPECTED_TABLES = ['node/1', 'way/2', 'node/3'].reduce((sum, id) => sum + tableLayoutFor(id).length, 0);
 
 beforeAll(connectTestDb);
@@ -17,7 +18,7 @@ beforeEach(clearDb);
 
 describe('runSeed', () => {
   it('creates restaurants, tables and sample menus, skipping unnamed and duplicate elements', async () => {
-    const summary = await runSeed({ elements });
+    const summary = await runSeed({ elements, ownerPassword: PW });
     expect(summary).toEqual({
       restaurantsCreated: 3,
       restaurantsExisting: 0,
@@ -38,8 +39,8 @@ describe('runSeed', () => {
   });
 
   it('is idempotent: a second run changes nothing', async () => {
-    await runSeed({ elements });
-    const second = await runSeed({ elements });
+    await runSeed({ elements, ownerPassword: PW });
+    const second = await runSeed({ elements, ownerPassword: PW });
     expect(second).toEqual({ restaurantsCreated: 0, restaurantsExisting: 3, tablesCreated: 0, menuItemsCreated: 0 });
     expect(await Restaurant.countDocuments()).toBe(3);
     expect(await Table.countDocuments()).toBe(EXPECTED_TABLES);
@@ -48,13 +49,13 @@ describe('runSeed', () => {
   });
 
   it('keeps owner-edited menus: edited items stay and deleted items do not return', async () => {
-    await runSeed({ elements });
+    await runSeed({ elements, ownerPassword: PW });
     const restaurant = await Restaurant.findOne({ externalId: 'node/1' });
     const [edited, removed] = await MenuItem.find({ restaurant: restaurant._id }).sort({ _id: 1 });
     await MenuItem.updateOne({ _id: edited._id }, { price: 777, isSample: false });
     await MenuItem.deleteOne({ _id: removed._id });
 
-    await runSeed({ elements });
+    await runSeed({ elements, ownerPassword: PW });
 
     expect(await MenuItem.countDocuments({ restaurant: restaurant._id })).toBe(11);
     expect((await MenuItem.findById(edited._id)).price).toBe(777);
@@ -62,21 +63,21 @@ describe('runSeed', () => {
   });
 
   it('recreates tables only for a restaurant that has none', async () => {
-    await runSeed({ elements });
+    await runSeed({ elements, ownerPassword: PW });
     const restaurant = await Restaurant.findOne({ externalId: 'way/2' });
     await Table.deleteMany({ restaurant: restaurant._id });
-    const second = await runSeed({ elements });
+    const second = await runSeed({ elements, ownerPassword: PW });
     expect(second.tablesCreated).toBe(tableLayoutFor('way/2').length);
   });
 
   it('respects the limit', async () => {
-    const summary = await runSeed({ elements, limit: 2 });
+    const summary = await runSeed({ elements, ownerPassword: PW, limit: 2 });
     expect(summary.restaurantsCreated).toBe(2);
     expect(await Restaurant.countDocuments()).toBe(2);
   });
 
   it('handles an empty element list and still creates the demo owner', async () => {
-    const summary = await runSeed({ elements: [] });
+    const summary = await runSeed({ elements: [], ownerPassword: PW });
     expect(summary).toEqual({ restaurantsCreated: 0, restaurantsExisting: 0, tablesCreated: 0, menuItemsCreated: 0 });
     expect(await User.countDocuments({ email: 'owner@demo.com' })).toBe(1);
   });
@@ -85,5 +86,27 @@ describe('runSeed', () => {
     await User.create({ name: 'Existing', email: 'owner@demo.com', passwordHash: 'keep-me', role: 'owner' });
     await runSeed({ elements, ownerPassword: 'different' });
     expect((await User.findOne({ email: 'owner@demo.com' })).passwordHash).toBe('keep-me');
+  });
+});
+
+describe('runSeed demo owner safety', () => {
+  it.each([[undefined], [''], ['short']])('refuses a missing or weak owner password (%j)', async (ownerPassword) => {
+    await expect(runSeed({ elements, ownerPassword })).rejects.toThrow(/ownerPassword/);
+    expect(await Restaurant.countDocuments()).toBe(0);
+  });
+
+  it('refuses to run when owner@demo.com already exists with a non-owner role', async () => {
+    await User.create({ name: 'Squatter', email: 'owner@demo.com', passwordHash: 'x', role: 'diner' });
+    await expect(runSeed({ elements, ownerPassword: PW })).rejects.toThrow(/not an owner/i);
+    expect(await Restaurant.countDocuments()).toBe(0);
+  });
+
+  it('resets the demo owner password only when asked', async () => {
+    await runSeed({ elements, ownerPassword: PW });
+    const before = (await User.findOne({ email: 'owner@demo.com' })).passwordHash;
+    await runSeed({ elements, ownerPassword: 'another-pass-1' });
+    expect((await User.findOne({ email: 'owner@demo.com' })).passwordHash).toBe(before);
+    await runSeed({ elements, ownerPassword: 'another-pass-1', resetOwnerPassword: true });
+    expect((await User.findOne({ email: 'owner@demo.com' })).passwordHash).not.toBe(before);
   });
 });

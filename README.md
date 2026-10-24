@@ -4,7 +4,7 @@ Table reservations with a refundable deposit, built for restaurants that still t
 
 **Live app:** https://[client-url]  ·  **API:** https://[api-url]/api/health  ·  **Demo video:** [link]
 
-**Demo logins** (test data): owner `owner@demo.com` / `password123`, diner `diner@demo.com` / `password123`
+**Demo logins** (test data): owner `owner@demo.com` (password is whatever `SEED_OWNER_PASSWORD` you set when seeding) and a diner account you register yourself. Add the credentials you choose here before submitting.
 
 ## Problem Statement
 
@@ -71,7 +71,9 @@ npm run seed:fetch    # optional: refresh the snapshot from OpenStreetMap (needs
 ```
 
 - **Idempotent:** run it as often as you like. Existing restaurants are never duplicated, and menus an owner has edited are never overwritten.
-- **Demo owner:** all seeded restaurants belong to `owner@demo.com` (password from `SEED_OWNER_PASSWORD`, default `password123`, demo only). Use a different password on any shared deployment.
+- **Demo owner:** all seeded restaurants belong to `owner@demo.com`. `SEED_OWNER_PASSWORD` (8+ characters, set in `backend/.env`) is **required**: there is no default, because this account can cancel bookings and mark no-shows at every seeded restaurant. That email cannot be registered through the app. To change the password later run `npm run seed -- --reset-owner-password`.
+- **Privacy:** the snapshot keeps only name, cuisine and address tags. Phone numbers, emails and other contact tags from OpenStreetMap are stripped, and `npm run seed:fetch` strips them too.
+- **Re-seeding:** a restaurant that already has tables or menu items is left alone. If you delete every dish or table of a seeded restaurant, the next seed adds the sample ones back, and an interrupted run can leave a restaurant with only some of its tables, so clear that restaurant's tables or menu items before re-running.
 - **What is real:** restaurant names, addresses and cuisine tags come from OpenStreetMap. Neighbourhood tags are sparse in the source data, so most listings show only the street or city.
 - **What is sample data:** opening hours (11:00 to 23:00), tables (4 to 6 per restaurant) and **menus**. Menus are generic dishes for the cuisine, shown with a "Sample menu" banner. They are not any restaurant's actual menu. An owner who edits a dish makes it their own.
 - **Attribution:** Restaurant data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [ODbL](https://opendatacommons.org/licenses/odbl/).
@@ -87,7 +89,7 @@ npm run seed:fetch    # optional: refresh the snapshot from OpenStreetMap (needs
 | `GATEWAY` | backend | `mock` (no keys needed) or `razorpay` |
 | `ALLOW_MOCK_GATEWAY` | backend | Must be `true` to run `GATEWAY=mock` with `NODE_ENV=production`. Demo only: the mock gateway lets any diner "pay" for free |
 | `MOCK_GATEWAY_SECRET` | backend | Signing secret for the mock gateway |
-| `SEED_OWNER_PASSWORD` | backend | Password for the demo owner created by `npm run seed` (default `password123`) |
+| `SEED_OWNER_PASSWORD` | backend | Required by `npm run seed`: password for the demo owner `owner@demo.com` (8+ characters, your choice) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | backend | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
 | `VITE_API_URL` | frontend | API base URL, e.g. `https://[api-url]/api` |
 

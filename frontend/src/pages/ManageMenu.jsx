@@ -85,7 +85,7 @@ export default function ManageMenu() {
       <ErrorBanner error={error ?? actionError} />
       {loading && <Spinner />}
       {data?.isSample && (
-        <p className="banner banner-warn">These are sample dishes. Editing an item turns it into your own.</p>
+        <p className="banner banner-warn">This menu still includes sample dishes. Editing a dish turns it into your own.</p>
       )}
       {data?.categories.length === 0 && <EmptyState>No menu yet. Add your first dish below.</EmptyState>}
       {data?.categories.map((category) => (

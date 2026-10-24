@@ -1,4 +1,4 @@
-const DEFAULT_CUISINE_LABEL = 'Multi-cuisine';
+const DEFAULT_CUISINE_LABEL = 'Cuisine not listed';
 
 // Checked in order; the first group with a matching keyword wins.
 const RULES = Object.freeze([

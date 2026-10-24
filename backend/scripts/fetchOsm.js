@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { sanitizeElement } from '../src/seed/sanitizeOsm.js';
 
 const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 const SNAPSHOT_URL = new URL('./data/bangalore-osm.json', import.meta.url);
@@ -27,7 +28,7 @@ async function main() {
   const snapshot = {
     fetchedAt: new Date().toISOString(),
     source: 'OpenStreetMap contributors (ODbL), via Overpass API',
-    elements: payload.elements,
+    elements: payload.elements.map(sanitizeElement),
   };
   await writeFile(SNAPSHOT_URL, `${JSON.stringify(snapshot)}\n`);
   process.stdout.write(`Saved ${payload.elements.length} elements to scripts/data/bangalore-osm.json\n`);

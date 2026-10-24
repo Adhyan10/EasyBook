@@ -40,7 +40,7 @@ describe('mapOsmElement', () => {
   it('falls back to neighbourhood, then to plain Bangalore', () => {
     expect(mapOsmElement(element({ name: 'A', 'addr:neighbourhood': 'HSR' })).area).toBe('HSR');
     const bare = mapOsmElement(element({ name: 'B' }));
-    expect(bare).toMatchObject({ area: '', address: 'Bangalore', cuisine: 'Multi-cuisine', cuisineKey: 'multi' });
+    expect(bare).toMatchObject({ area: '', address: 'Bangalore', cuisine: 'Cuisine not listed', cuisineKey: 'multi' });
   });
 
   it('clips over-long values and keeps the element type in the id', () => {

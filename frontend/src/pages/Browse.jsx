@@ -46,7 +46,10 @@ export default function Browse() {
             <p className="muted">
               {restaurant.cuisine} · {restaurant.area ? `${restaurant.area}, ` : ''}{restaurant.city}
             </p>
-            <p>{restaurant.openTime} – {restaurant.closeTime}</p>
+            <p>
+              {restaurant.openTime} – {restaurant.closeTime}
+              {restaurant.isSample && <span className="badge"> sample hours</span>}
+            </p>
           </Link>
         ))}
       </div>

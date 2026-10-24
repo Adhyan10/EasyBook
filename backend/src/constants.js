@@ -12,6 +12,9 @@ export const MS_PER_HOUR = 3_600_000;
 export const PAISE_PER_RUPEE = 100;
 export const MAX_LIVE_HOLDS_PER_DINER = 3;
 
+export const DEMO_OWNER_EMAIL = 'owner@demo.com';
+export const MIN_SEED_PASSWORD_LENGTH = 8;
+
 export const ROLES = Object.freeze({ DINER: 'diner', OWNER: 'owner' });
 
 export const BOOKING_STATUS = Object.freeze({

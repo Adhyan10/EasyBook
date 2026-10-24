@@ -71,3 +71,11 @@ describe('GET /api/auth/me', () => {
     expect(bad.status).toBe(401);
   });
 });
+
+describe('reserved demo email', () => {
+  it('cannot be registered, so nobody can pre-claim the seeded demo owner', async () => {
+    const res = await request(app).post('/api/auth/register').send({ ...valid, email: 'Owner@Demo.com', role: 'owner' });
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe('Email already registered');
+  });
+});

@@ -15,8 +15,9 @@ describe('groupMenu', () => {
     expect(result.categories[1].items.map((i) => i.name)).toEqual(['B']);
   });
 
-  it('is a sample menu only when every item is a sample', () => {
+  it('flags the menu as sample while any sample dish remains', () => {
     expect(groupMenu([item('A', 'x', true), item('A', 'y', true)]).isSample).toBe(true);
-    expect(groupMenu([item('A', 'x', true), item('A', 'y', false)]).isSample).toBe(false);
+    expect(groupMenu([item('A', 'x', true), item('A', 'y', false)]).isSample).toBe(true);
+    expect(groupMenu([item('A', 'x', false), item('A', 'y', false)]).isSample).toBe(false);
   });
 });

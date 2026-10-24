@@ -28,8 +28,8 @@ describe('titleCaseCuisine', () => {
   it.each([
     ['south_indian', 'South Indian'],
     ['chinese;thai', 'Chinese'],
-    ['', 'Multi-cuisine'],
-    [undefined, 'Multi-cuisine'],
+    ['', 'Cuisine not listed'],
+    [undefined, 'Cuisine not listed'],
     ['  pizza ', 'Pizza'],
   ])('formats %j as %s', (tag, expected) => {
     expect(titleCaseCuisine(tag)).toBe(expected);
