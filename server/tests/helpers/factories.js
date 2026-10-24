@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Restaurant } from '../../src/models/Restaurant.js';
+import { Table } from '../../src/models/Table.js';
 import { User } from '../../src/models/User.js';
 import { signToken } from '../../src/utils/jwt.js';
 
@@ -21,6 +22,10 @@ export async function createUser(role = 'diner', overrides = {}) {
 }
 
 export const authHeader = (user) => ({ Authorization: `Bearer ${signToken(user)}` });
+
+export function createTable(restaurant, overrides = {}) {
+  return Table.create({ restaurant: restaurant._id, label: `T${nextId()}`, seats: 4, ...overrides });
+}
 
 export function createRestaurant(owner, overrides = {}) {
   const n = nextId();
