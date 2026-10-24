@@ -245,3 +245,14 @@ Cut first if behind: webhook (keep verify), deposits ledger page, email.
 ## 13. Submission Checklist
 
 Mapped from the end-term guidelines: working deployment, README with all required sections, `.env.example`, no secrets in git, meaningful commit history, demo video 3–5 min, form submitted before the deadline.
+
+## 14. Implementation Notes (deviations from the sections above)
+
+- `payments` also stores `restaurant` so the deposits ledger is a single query.
+- Payment status adds `refund_failed` for refunds the gateway rejected; the ledger surfaces these for manual follow-up.
+- Ownership checks are a service (`getOwnedRestaurant`) used by controllers instead of a `loadOwnedRestaurant` middleware.
+- `POST /payments/mock-pay` exists only when `GATEWAY=mock`; it returns a valid test signature so the demo works without Razorpay keys.
+- A diner re-booking the same slot releases their own abandoned pending hold first.
+- Owners may cancel a booking after its slot has started (full refund); marking `no_show` requires the slot to have started.
+- Changing a restaurant's opening hours or slot length is blocked (409) while upcoming active bookings exist.
+- Deleting a table is blocked (409) only when it has upcoming active bookings; past bookings keep a null table reference and the UI shows "Removed".
