@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Booking } from '../../src/models/Booking.js';
+import { Payment } from '../../src/models/Payment.js';
 import { Restaurant } from '../../src/models/Restaurant.js';
 import { Table } from '../../src/models/Table.js';
 import { User } from '../../src/models/User.js';
@@ -35,6 +36,28 @@ export function createBookingDoc({ restaurant, table, diner, ...overrides }) {
     status: 'confirmed',
     ...overrides,
   });
+}
+
+export async function seedConfirmedBooking({
+  restaurant,
+  table,
+  diner,
+  partySize = 2,
+  bookingStatus = 'confirmed',
+  paymentStatus = 'paid',
+  ...overrides
+}) {
+  const booking = await createBookingDoc({ restaurant, table, diner, partySize, status: bookingStatus, ...overrides });
+  const n = nextId();
+  const payment = await Payment.create({
+    booking: booking._id,
+    restaurant: restaurant._id,
+    amount: restaurant.depositPerPerson * partySize,
+    gatewayOrderId: `order_seed_${n}`,
+    gatewayPaymentId: `pay_seed_${n}`,
+    status: paymentStatus,
+  });
+  return { booking, payment };
 }
 
 export function createTable(restaurant, overrides = {}) {
