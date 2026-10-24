@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { sendOk } from '../utils/respond.js';
 import { authRoutes } from './authRoutes.js';
+import { bookingRoutes } from './bookingRoutes.js';
 import { restaurantRoutes } from './restaurantRoutes.js';
 import { tableRoutes } from './tableRoutes.js';
 
@@ -10,3 +11,4 @@ apiRouter.get('/health', (_req, res) => sendOk(res, { status: 'ok' }));
 apiRouter.use('/auth', authRoutes);
 apiRouter.use(restaurantRoutes);
 apiRouter.use(tableRoutes);
+apiRouter.use(bookingRoutes);
