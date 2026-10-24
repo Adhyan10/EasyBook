@@ -1,28 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import HeroPanel from '../components/HeroPanel.jsx';
 import RestaurantCard from '../components/RestaurantCard.jsx';
 import { EmptyState, ErrorBanner, Spinner } from '../components/Feedback.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useLoad } from '../hooks/useLoad.js';
 
 const PAGE_SIZE = 12;
-
-function HeroTicket() {
-  return (
-    <div className="stub hero__art" aria-hidden="true">
-      <div className="stub__main">
-        <p className="eyebrow">Tonight</p>
-        <div className="stub__time">20:00</div>
-        <p className="stub__meta">Table for 2 · Indiranagar</p>
-      </div>
-      <div className="stub__tear" />
-      <div className="stub__side">
-        <span className="stamp confirmed">Confirmed</span>
-        <div className="stub__code">№ 7K2Q4M</div>
-      </div>
-    </div>
-  );
-}
 
 export default function Browse() {
   const { call, user } = useAuth();
@@ -71,7 +55,7 @@ export default function Browse() {
             </p>
           )}
         </div>
-        <HeroTicket />
+        <HeroPanel />
       </section>
 
       <div className="section-head">

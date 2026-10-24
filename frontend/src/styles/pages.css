@@ -16,9 +16,6 @@
   color: var(--ink);
   background: linear-gradient(transparent 62%, color-mix(in srgb, var(--gold) 55%, transparent) 0);
 }
-.hero__art {
-  transform: rotate(2deg);
-}
 .search {
   display: flex;
   flex-wrap: wrap;
@@ -254,9 +251,6 @@
   .hero {
     grid-template-columns: minmax(0, 1fr);
   }
-  .hero__art {
-    display: none;
-  }
   .detail {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -350,4 +344,42 @@
 }
 .credit a {
   overflow-wrap: anywhere;
+}
+
+/* How it works: a real sequence, so the numbers carry meaning. */
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 1.1rem 1.3rem;
+  counter-reset: step;
+  display: grid;
+  gap: 1rem;
+}
+.steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  column-gap: 0.8rem;
+  align-items: start;
+}
+.steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--jac-tint);
+  color: var(--jac-deep);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+.steps strong {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+.steps span {
+  color: var(--ink-2);
+  font-size: 0.93rem;
 }
