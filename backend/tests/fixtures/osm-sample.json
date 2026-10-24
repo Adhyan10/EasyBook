@@ -1,0 +1,7 @@
+[
+  { "type": "node", "id": 1, "tags": { "name": "Udupi Park", "cuisine": "south_indian", "addr:suburb": "Jayanagar", "addr:street": "4th Block" } },
+  { "type": "way", "id": 2, "center": { "lat": 12.97, "lon": 77.59 }, "tags": { "name": "Wok This Way", "cuisine": "chinese", "addr:neighbourhood": "Indiranagar" } },
+  { "type": "node", "id": 1, "tags": { "name": "Udupi Park (duplicate)", "cuisine": "south_indian" } },
+  { "type": "node", "id": 4, "tags": { "cuisine": "indian" } },
+  { "type": "node", "id": 3, "tags": { "name": "Plain Eatery" } }
+]

@@ -8,7 +8,9 @@
     "dev": "node --watch src/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "seed": "node scripts/seed.js",
+    "seed:fetch": "node scripts/fetchOsm.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
