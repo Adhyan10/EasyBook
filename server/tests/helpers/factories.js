@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { Booking } from '../../src/models/Booking.js';
 import { Restaurant } from '../../src/models/Restaurant.js';
 import { Table } from '../../src/models/Table.js';
 import { User } from '../../src/models/User.js';
@@ -22,6 +23,19 @@ export async function createUser(role = 'diner', overrides = {}) {
 }
 
 export const authHeader = (user) => ({ Authorization: `Bearer ${signToken(user)}` });
+
+export function createBookingDoc({ restaurant, table, diner, ...overrides }) {
+  return Booking.create({
+    restaurant: restaurant._id,
+    table: table._id,
+    diner: diner._id,
+    date: '2099-06-15',
+    slotStart: '19:00',
+    partySize: 2,
+    status: 'confirmed',
+    ...overrides,
+  });
+}
 
 export function createTable(restaurant, overrides = {}) {
   return Table.create({ restaurant: restaurant._id, label: `T${nextId()}`, seats: 4, ...overrides });
