@@ -37,7 +37,7 @@ export default function Layout() {
       <main className="container"><Outlet /></main>
       <footer className="footer">
         Restaurant data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL).
-        Seeded menus, tables and hours are sample data.
+        Seeded menus, tables and hours are sample data. <Link to="/credits">Photo credits</Link>
       </footer>
     </>
   );

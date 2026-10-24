@@ -76,6 +76,7 @@ npm run seed:fetch    # optional: refresh the snapshot from OpenStreetMap (needs
 - **Re-seeding:** a restaurant that already has tables or menu items is left alone. If you delete every dish or table of a seeded restaurant, the next seed adds the sample ones back, and an interrupted run can leave a restaurant with only some of its tables, so clear that restaurant's tables or menu items before re-running.
 - **What is real:** restaurant names, addresses and cuisine tags come from OpenStreetMap. Neighbourhood tags are sparse in the source data, so most listings show only the street or city.
 - **What is sample data:** opening hours (11:00 to 23:00), tables (4 to 6 per restaurant) and **menus**. Menus are generic dishes for the cuisine, shown with a "Sample menu" banner. They are not any restaurant's actual menu. An owner who edits a dish makes it their own.
+- **Photos:** restaurant cards and pages show illustrative stock photos (food matched to cuisine, plus some dining rooms), picked from the restaurant id so each keeps the same photo. They are **not** pictures of the restaurants. They come from Wikimedia Commons under CC0 / CC BY / CC BY-SA licences, are stored in `frontend/public/covers`, and are credited on the in-app **Photo credits** page (`/credits`).
 - **Attribution:** Restaurant data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [ODbL](https://opendatacommons.org/licenses/odbl/).
 
 ## Environment Variables

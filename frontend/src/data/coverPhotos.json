@@ -1,0 +1,312 @@
+{
+ "pools": {
+  "south": [
+   {
+    "file": "south-1.jpg",
+    "title": "Masala dosa 01.jpg",
+    "author": "Marajozkee",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Masala_dosa_01.jpg"
+   },
+   {
+    "file": "south-2.jpg",
+    "title": "Masala Dosa and Vada.jpg",
+    "author": "Gannu03",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Masala_Dosa_and_Vada.jpg"
+   },
+   {
+    "file": "south-3.jpg",
+    "title": "Idli Sambar-Noida-UP-SP004.jpg",
+    "author": "Sutapa Pal",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Idli_Sambar-Noida-UP-SP004.jpg"
+   },
+   {
+    "file": "south-4.jpg",
+    "title": "Idli Sambar Food by Ms Ujwala Kasambe DSCN9744 (2).jpg",
+    "author": "Dr. Raju Kasambe",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Idli_Sambar_Food_by_Ms_Ujwala_Kasambe_DSCN9744_(2).jpg"
+   },
+   {
+    "file": "south-5.jpg",
+    "title": "South Indian thali-Saravana bhawan-New Delhi-6.jpg",
+    "author": "Siva301in",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:South_Indian_thali-Saravana_bhawan-New_Delhi-6.jpg"
+   },
+   {
+    "file": "south-6.jpg",
+    "title": "A Thali, famous South Indian meal served on a banana leaf.jpg",
+    "author": "Melanie M",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:A_Thali,_famous_South_Indian_meal_served_on_a_banana_leaf.jpg"
+   },
+   {
+    "file": "south-7.jpg",
+    "title": "South Indian Breakast Idli Vada Sambar Chutney.JPG",
+    "author": "Saind147",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:South_Indian_Breakast_Idli_Vada_Sambar_Chutney.JPG"
+   },
+   {
+    "file": "south-8.jpg",
+    "title": "Mini Vada Sambar.jpg",
+    "author": "LuckyRani2990",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mini_Vada_Sambar.jpg"
+   }
+  ],
+  "north": [
+   {
+    "file": "north-1.jpg",
+    "title": "Rotti and Paneer Butter Masala.jpg",
+    "author": "Ganesh Mohan T",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rotti_and_Paneer_Butter_Masala.jpg"
+   },
+   {
+    "file": "north-3.jpg",
+    "title": "Chicken makhani.jpg",
+    "author": "stu_spivack",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chicken_makhani.jpg"
+   },
+   {
+    "file": "north-5.jpg",
+    "title": "Naan-and-Curry-1.jpg",
+    "author": "Evelyn-rose",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Naan-and-Curry-1.jpg"
+   },
+   {
+    "file": "north-6.jpg",
+    "title": "Mutton curry with butter naan, Kolkata - West Bengal - DSC 0049.jpg",
+    "author": "TAPAS KUMAR HALDER",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mutton_curry_with_butter_naan,_Kolkata_-_West_Bengal_-_DSC_0049.jpg"
+   },
+   {
+    "file": "north-7.jpg",
+    "title": "Tandoori chicken Indian.jpg",
+    "author": "pelican",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tandoori_chicken_Indian.jpg"
+   },
+   {
+    "file": "north-8.jpg",
+    "title": "Tandoori Chicken 1.JPG",
+    "author": "Miansari66",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Tandoori_Chicken_1.JPG"
+   }
+  ],
+  "biryani": [
+   {
+    "file": "biryani-1.jpg",
+    "title": "A home made plate of mutton biryani served with chicken kassa cooked in the bengali style.jpg",
+    "author": "Subhrajyoti07",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:A_home_made_plate_of_mutton_biryani_served_with_chicken_kassa_cooked_in_the_bengali_style.jpg"
+   },
+   {
+    "file": "biryani-2.jpg",
+    "title": "Shrimp Biriyani.JPG",
+    "author": "Jyothis",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Shrimp_Biriyani.JPG"
+   },
+   {
+    "file": "biryani-3.jpg",
+    "title": "Chicken Hyderabadi Biryani.JPG",
+    "author": "Dheerajk88",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chicken_Hyderabadi_Biryani.JPG"
+   },
+   {
+    "file": "biryani-4.jpg",
+    "title": "Hyderabadi egg biryani.jpg",
+    "author": "Ravi Dwivedi",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hyderabadi_egg_biryani.jpg"
+   },
+   {
+    "file": "biryani-5.jpg",
+    "title": "Mutton biryani.JPG",
+    "author": "Bhaskaranaidu",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mutton_biryani.JPG"
+   }
+  ],
+  "chinese": [
+   {
+    "file": "chinese-1.jpg",
+    "title": "Char Kway Teow in Hong Kong.jpg",
+    "author": "Ceeseven",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Char_Kway_Teow_in_Hong_Kong.jpg"
+   },
+   {
+    "file": "chinese-2.jpg",
+    "title": "Char kway teow in parit buntar.jpg",
+    "author": "brown_colour",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Char_kway_teow_in_parit_buntar.jpg"
+   },
+   {
+    "file": "chinese-3.jpg",
+    "title": "Steamed Momos - KOLKATA.jpg",
+    "author": "TAPAS KUMAR HALDER",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Steamed_Momos_-_KOLKATA.jpg"
+   },
+   {
+    "file": "chinese-4.jpg",
+    "title": "Steamed momos - Tibetan cuisine.jpg",
+    "author": "Sarkar Sayantan",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Steamed_momos_-_Tibetan_cuisine.jpg"
+   },
+   {
+    "file": "chinese-7.jpg",
+    "title": "Mini abalones fried rice with choi sum.jpg",
+    "author": "Peachyeung316",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mini_abalones_fried_rice_with_choi_sum.jpg"
+   },
+   {
+    "file": "chinese-8.jpg",
+    "title": "Chicken fried rice - Stir Fry by CK 2023-12-02.jpg",
+    "author": "Andy Li",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Chicken_fried_rice_-_Stir_Fry_by_CK_2023-12-02.jpg"
+   }
+  ],
+  "cafe": [
+   {
+    "file": "cafe-1.jpg",
+    "title": "Matcha tea latte with rosetta latte art.jpg",
+    "author": "Irvan Ary Maulana",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Matcha_tea_latte_with_rosetta_latte_art.jpg"
+   },
+   {
+    "file": "cafe-2.jpg",
+    "title": "Cappuccino with latte art on Coffee Right in Brno, Brno-City District.jpg",
+    "author": "Frettie",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cappuccino_with_latte_art_on_Coffee_Right_in_Brno,_Brno-City_District.jpg"
+   },
+   {
+    "file": "cafe-3.jpg",
+    "title": "Margherita Originale.JPG",
+    "author": "Mario56",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Margherita_Originale.JPG"
+   },
+   {
+    "file": "cafe-4.jpg",
+    "title": "Margherita pizza on plate.jpg",
+    "author": "Shisma",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Margherita_pizza_on_plate.jpg"
+   },
+   {
+    "file": "cafe-5.jpg",
+    "title": "Cheese and tomato croissant - Coffee at 33 2024-02-23.jpg",
+    "author": "Andy Li",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Cheese_and_tomato_croissant_-_Coffee_at_33_2024-02-23.jpg"
+   },
+   {
+    "file": "cafe-6.jpg",
+    "title": "Croissant in coffee shop.jpg",
+    "author": "Geoffreyrabbit",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Croissant_in_coffee_shop.jpg"
+   },
+   {
+    "file": "cafe-7.jpg",
+    "title": "Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg",
+    "author": "Daria YakovlevaMinor edits made by Subsidiary account",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg"
+   },
+   {
+    "file": "cafe-8.jpg",
+    "title": "St. Honoré cake with chocolate (DSCF4539).jpg",
+    "author": "Trougnouf",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:St._Honor%C3%A9_cake_with_chocolate_(DSCF4539).jpg"
+   }
+  ],
+  "interior": [
+   {
+    "file": "interior-2.jpg",
+    "title": "Childs' Restaurant building interior (84200).jpg",
+    "author": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Childs%27_Restaurant_building_interior_(84200).jpg"
+   },
+   {
+    "file": "interior-3.jpg",
+    "title": "Restaurant room of Amantaka luxury Resort & Hotel in Luang Prabang Laos.jpg",
+    "author": "Basile Morin",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Restaurant_room_of_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg"
+   },
+   {
+    "file": "interior-5.jpg",
+    "title": "Tartine New Orleans - Bakery cafe - interior, 11 January 2024 - Seating.jpg",
+    "author": "Infrogmation of New Orleans",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tartine_New_Orleans_-_Bakery_cafe_-_interior,_11_January_2024_-_Seating.jpg"
+   },
+   {
+    "file": "interior-6.jpg",
+    "title": "Ōhori Terrace The interior of the café Ōhori-kōen Chūō-ku Fukuoka 20260605 171122.jpg",
+    "author": "Hirho",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%C5%8Chori_Terrace_The_interior_of_the_caf%C3%A9_%C5%8Chori-k%C5%8Den_Ch%C5%AB%C5%8D-ku_Fukuoka_20260605_171122.jpg"
+   }
+  ]
+ }
+}

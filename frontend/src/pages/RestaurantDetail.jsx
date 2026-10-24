@@ -7,7 +7,9 @@ import SlotPicker from '../components/SlotPicker.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCountdown } from '../hooks/useCountdown.js';
 import { useLoad } from '../hooks/useLoad.js';
+import photos from '../data/coverPhotos.json';
 import { collectPayment } from '../lib/checkout.js';
+import { pickCover } from '../lib/coverPhoto.js';
 import { clock, formatDate, rupees, todayLocal } from '../lib/format.js';
 
 const MAX_PARTY_SIZE = 20;
@@ -107,10 +109,17 @@ export default function RestaurantDetail() {
   const deposit = place.depositPerPerson * Number(partySize || 0);
   const isDiner = user?.role === 'diner';
   const address = place.address.includes(place.city) ? place.address : `${place.address}, ${place.city}`;
+  const photo = pickCover(photos, place);
 
   return (
     <>
       <Link to="/" className="back-link">← All restaurants</Link>
+      {photo && (
+        <figure className="detail-cover">
+          <img src={`/covers/${photo.file}`} alt="" />
+          <figcaption className="photo-note">Illustrative photo · <Link to="/credits">credits</Link></figcaption>
+        </figure>
+      )}
       <header className="detail-head">
         <h1>{place.name}</h1>
         <p className="muted">{address}</p>

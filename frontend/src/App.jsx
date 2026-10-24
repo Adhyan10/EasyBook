@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Browse from './pages/Browse.jsx';
+import Credits from './pages/Credits.jsx';
 import DayReservations from './pages/DayReservations.jsx';
 import Deposits from './pages/Deposits.jsx';
 import Login from './pages/Login.jsx';
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/owner/restaurants/:id/reservations" element={<ProtectedRoute role="owner"><DayReservations /></ProtectedRoute>} />
         <Route path="/owner/restaurants/:id/deposits" element={<ProtectedRoute role="owner"><Deposits /></ProtectedRoute>} />
         <Route path="/owner/restaurants/:id/menu" element={<ProtectedRoute role="owner"><ManageMenu /></ProtectedRoute>} />
+        <Route path="/credits" element={<Credits />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<p className="muted">Page not found.</p>} />

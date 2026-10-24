@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
+import photos from '../data/coverPhotos.json';
 import { coverClass } from '../lib/cuisine.js';
+import { pickCover } from '../lib/coverPhoto.js';
 
 export default function RestaurantCard({ restaurant, index = 0 }) {
   const place = [restaurant.area, restaurant.city].filter(Boolean).join(', ');
+  const photo = pickCover(photos, restaurant);
   return (
     <Link
       to={`/restaurants/${restaurant._id}`}
@@ -10,8 +13,15 @@ export default function RestaurantCard({ restaurant, index = 0 }) {
       style={{ '--i': index }}
       aria-label={`${restaurant.name}, ${restaurant.cuisine}, ${place}`}
     >
-      <div className={`rcard__cover ${coverClass(restaurant.cuisine)}`} aria-hidden="true">
-        <span className="rcard__initial">{restaurant.name.trim().charAt(0).toUpperCase()}</span>
+      <div className={`rcard__cover ${coverClass(restaurant.cuisine)}`}>
+        {photo ? (
+          <>
+            <img className="rcard__photo" src={`/covers/${photo.file}`} alt="" width="360" height="232" loading="lazy" decoding="async" />
+            <span className="photo-note">Illustrative photo</span>
+          </>
+        ) : (
+          <span className="rcard__initial" aria-hidden="true">{restaurant.name.trim().charAt(0).toUpperCase()}</span>
+        )}
       </div>
       <div className="rcard__body">
         <h3 className="rcard__name">{restaurant.name}</h3>
