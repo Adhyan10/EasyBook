@@ -246,6 +246,10 @@ Cut first if behind: webhook (keep verify), deposits ledger page, email.
 
 Mapped from the end-term guidelines: working deployment, README with all required sections, `.env.example`, no secrets in git, meaningful commit history, demo video 3–5 min, form submitted before the deadline.
 
+## 15. Addendum
+
+Menus and the Bangalore seed are specified in `2026-10-24-bangalore-seed-and-menu-design.md`.
+
 ## 14. Implementation Notes (deviations from the sections above)
 
 - `payments` also stores `restaurant` so the deposits ledger is a single query.

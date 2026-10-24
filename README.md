@@ -60,6 +60,22 @@ npm install && npm run dev            # app on http://localhost:5173
 
 Run the tests: `cd backend && npm test` (downloads an in-memory MongoDB on first run). Coverage: `npm run coverage`.
 
+## Seed Data (Bangalore restaurants and menus)
+
+So the app is not empty on first open, a seed script imports real Bangalore restaurants and gives each tables and a sample menu.
+
+```bash
+cd backend
+npm run seed          # imports up to 200 restaurants from the committed snapshot into the database in backend/.env
+npm run seed:fetch    # optional: refresh the snapshot from OpenStreetMap (needs internet)
+```
+
+- **Idempotent:** run it as often as you like. Existing restaurants are never duplicated, and menus an owner has edited are never overwritten.
+- **Demo owner:** all seeded restaurants belong to `owner@demo.com` (password from `SEED_OWNER_PASSWORD`, default `password123`, demo only). Use a different password on any shared deployment.
+- **What is real:** restaurant names, addresses and cuisine tags come from OpenStreetMap. Neighbourhood tags are sparse in the source data, so most listings show only the street or city.
+- **What is sample data:** opening hours (11:00 to 23:00), tables (4 to 6 per restaurant) and **menus**. Menus are generic dishes for the cuisine, shown with a "Sample menu" banner. They are not any restaurant's actual menu. An owner who edits a dish makes it their own.
+- **Attribution:** Restaurant data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [ODbL](https://opendatacommons.org/licenses/odbl/).
+
 ## Environment Variables
 
 | Variable | Where | Purpose |
@@ -71,6 +87,7 @@ Run the tests: `cd backend && npm test` (downloads an in-memory MongoDB on first
 | `GATEWAY` | backend | `mock` (no keys needed) or `razorpay` |
 | `ALLOW_MOCK_GATEWAY` | backend | Must be `true` to run `GATEWAY=mock` with `NODE_ENV=production`. Demo only: the mock gateway lets any diner "pay" for free |
 | `MOCK_GATEWAY_SECRET` | backend | Signing secret for the mock gateway |
+| `SEED_OWNER_PASSWORD` | backend | Password for the demo owner created by `npm run seed` (default `password123`) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | backend | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
 | `VITE_API_URL` | frontend | API base URL, e.g. `https://[api-url]/api` |
 
