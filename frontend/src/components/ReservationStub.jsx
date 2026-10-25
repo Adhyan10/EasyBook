@@ -4,6 +4,7 @@ import { formatDate, rupees, STATUS_LABEL } from '../lib/format.js';
 export default function ReservationStub({ booking, restaurantName, tableLabel, deposit, enter = false, muted = false, children }) {
   const code = String(booking._id).slice(-6).toUpperCase();
   return (
+    <div className="stub-wrap">
     <article className={`stub${enter ? ' stub--enter' : ''}${muted ? ' stub--muted' : ''}`} aria-label={`Reservation at ${restaurantName}`}>
       <div className="stub__main">
         <div className="stub__title">
@@ -29,5 +30,6 @@ export default function ReservationStub({ booking, restaurantName, tableLabel, d
         </div>
       </div>
     </article>
+    </div>
   );
 }

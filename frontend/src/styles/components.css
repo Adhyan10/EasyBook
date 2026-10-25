@@ -199,7 +199,12 @@ td button {
   text-decoration: line-through;
 }
 
-/* Reservation stub: the signature. A booking looks like a torn table slip. */
+/* Reservation stub: the signature. A booking looks like a torn table slip.
+   The wrapper is a size container, so the layout follows the space it has, not the screen. */
+.stub-wrap {
+  container-type: inline-size;
+  margin-bottom: 1rem;
+}
 .stub {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 0 auto;
@@ -207,8 +212,8 @@ td button {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-1);
-  margin-bottom: 1rem;
   position: relative;
+  overflow: hidden;
   transition:
     opacity var(--t-base) var(--ease-out),
     transform var(--t-base) var(--ease-out);
@@ -315,7 +320,7 @@ td button {
   margin-top: 0.75rem;
 }
 
-@media (max-width: 40rem) {
+@container (max-width: 34rem) {
   .stub {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -329,7 +334,6 @@ td button {
   .stub__tear::after {
     top: -11px;
     bottom: auto;
-    clip-path: none;
   }
   .stub__tear::before {
     left: -11px;
@@ -340,11 +344,19 @@ td button {
     right: -11px;
     clip-path: inset(0 0 0 50%);
   }
+  .stub__main {
+    padding: 1rem 1.1rem 0.9rem;
+  }
   .stub__side {
     width: auto;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
+    padding: 0.8rem 1.1rem 1rem;
+  }
+  .stub__time {
+    font-size: 1.9rem;
   }
 }
 
