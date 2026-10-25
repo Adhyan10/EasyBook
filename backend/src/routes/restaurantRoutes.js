@@ -18,7 +18,7 @@ export const restaurantRoutes = Router();
 const ownerOnly = [requireAuth, requireRole(ROLES.OWNER)];
 
 restaurantRoutes.get('/restaurants', validate({ query: listRestaurantsQuery }), listRestaurants);
-restaurantRoutes.get('/restaurants/mine', ...ownerOnly, myRestaurants);
+restaurantRoutes.get('/restaurants/mine', ...ownerOnly, validate({ query: listRestaurantsQuery }), myRestaurants);
 restaurantRoutes.get('/restaurants/:id', validate({ params: idParam }), getRestaurant);
 restaurantRoutes.get(
   '/restaurants/:id/availability',

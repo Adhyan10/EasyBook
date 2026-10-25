@@ -2,9 +2,8 @@ import { PAYMENT_STATUS } from '../constants.js';
 import { Booking } from '../models/Booking.js';
 import { Payment } from '../models/Payment.js';
 import { adjustDeposit, changeStatusAsOwner, retryRefundAsOwner } from '../services/bookingLifecycleService.js';
-import { withDeposits } from '../services/bookingView.js';
+import { withDeposits, withEffectiveStatus } from '../services/bookingView.js';
 import { summarizeDeposits } from '../services/depositSummary.js';
-import { expireStaleHolds } from '../services/holdExpiry.js';
 import { getOwnedRestaurant } from '../services/ownership.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendOk } from '../utils/respond.js';
@@ -18,14 +17,18 @@ const LEDGER_STATUSES = [
 const LEDGER_PAGE_SIZE = 100;
 
 export const dayBookings = asyncHandler(async (req, res) => {
-  const restaurant = await getOwnedRestaurant(req.valid.params.id, req.user._id);
+  const { id } = req.valid.params;
   const { date } = req.valid.query;
-  await expireStaleHolds({ restaurant: restaurant._id, date });
-  const bookings = await Booking.find({ restaurant: restaurant._id, date })
-    .populate('diner', 'name email')
-    .populate('table', 'label seats')
-    .sort({ slotStart: 1 });
-  sendOk(res, await withDeposits(bookings));
+  // The ownership check and the data lookup run together; nothing is sent unless the check passes.
+  const [, bookings] = await Promise.all([
+    getOwnedRestaurant(id, req.user._id),
+    Booking.find({ restaurant: id, date })
+      .sort({ slotStart: 1 })
+      .populate('diner', 'name email')
+      .populate('table', 'label seats')
+      .lean(),
+  ]);
+  sendOk(res, withEffectiveStatus(await withDeposits(bookings)));
 });
 
 export const changeStatus = asyncHandler(async (req, res) => {
@@ -43,10 +46,13 @@ export const adjust = asyncHandler(async (req, res) => {
 });
 
 export const deposits = asyncHandler(async (req, res) => {
-  const restaurant = await getOwnedRestaurant(req.valid.params.id, req.user._id);
-  const payments = await Payment.find({ restaurant: restaurant._id, status: { $in: LEDGER_STATUSES } })
-    .populate({ path: 'booking', select: 'date slotStart partySize status diner', populate: { path: 'diner', select: 'name' } })
-    .sort({ createdAt: -1 });
+  const { id } = req.valid.params;
+  const [, payments] = await Promise.all([
+    getOwnedRestaurant(id, req.user._id),
+    Payment.find({ restaurant: id, status: { $in: LEDGER_STATUSES } })
+      .populate({ path: 'booking', select: 'date slotStart partySize status diner', populate: { path: 'diner', select: 'name' } })
+      .sort({ createdAt: -1 }),
+  ]);
   sendOk(res, { summary: summarizeDeposits(payments), items: payments.slice(0, LEDGER_PAGE_SIZE) });
 });
 

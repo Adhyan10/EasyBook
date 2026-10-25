@@ -1,8 +1,8 @@
 import { Booking } from '../models/Booking.js';
 import { cancelBookingAsDiner } from '../services/bookingLifecycleService.js';
 import { createBooking, getResumeOrder } from '../services/bookingService.js';
-import { withDeposits } from '../services/bookingView.js';
-import { expireStaleHolds } from '../services/holdExpiry.js';
+import { Payment } from '../models/Payment.js';
+import { attachDeposits, withEffectiveStatus } from '../services/bookingView.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendOk } from '../utils/respond.js';
 
@@ -17,12 +17,16 @@ export const cancel = asyncHandler(async (req, res) => {
 });
 
 export const mine = asyncHandler(async (req, res) => {
-  await expireStaleHolds({ diner: req.user._id });
-  const bookings = await Booking.find({ diner: req.user._id })
-    .populate('restaurant', 'name city address')
-    .populate('table', 'label')
-    .sort({ date: -1, slotStart: -1 });
-  sendOk(res, await withDeposits(bookings));
+  const bookings = await Booking.find({ diner: req.user._id }).sort({ date: -1, slotStart: -1 }).lean();
+  // The restaurant/table lookups and the deposits do not depend on each other: one round trip, not three.
+  const [populated, payments] = await Promise.all([
+    Booking.populate(bookings, [
+      { path: 'restaurant', select: 'name city address' },
+      { path: 'table', select: 'label' },
+    ]),
+    Payment.find({ booking: { $in: bookings.map((b) => b._id) } }).lean(),
+  ]);
+  sendOk(res, withEffectiveStatus(attachDeposits(populated, payments)));
 });
 
 export const resumeOrder = asyncHandler(async (req, res) => {

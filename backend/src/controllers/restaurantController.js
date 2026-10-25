@@ -16,23 +16,32 @@ export const createRestaurant = asyncHandler(async (req, res) => {
   sendOk(res, restaurant, 201);
 });
 
-export const listRestaurants = asyncHandler(async (req, res) => {
-  const { city, cuisine, q, page, limit } = req.valid.query;
-  const filter = {
+function buildListFilter({ city, cuisine, q }, base = {}) {
+  return {
+    ...base,
     ...(city && { city: exactI(city) }),
     ...(cuisine && { cuisine: exactI(cuisine) }),
     ...(q && { $or: [{ name: new RegExp(escapeRegex(q), 'i') }, { area: new RegExp(escapeRegex(q), 'i') }] }),
   };
+}
+
+async function loadPage(filter, { page, limit }) {
   const [items, total] = await Promise.all([
     Restaurant.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit).lean(),
     Restaurant.countDocuments(filter),
   ]);
+  return { items, page, limit, total };
+}
+
+export const listRestaurants = asyncHandler(async (req, res) => {
   res.set('Cache-Control', PUBLIC_CACHE_CONTROL);
-  sendOk(res, { items, page, limit, total });
+  sendOk(res, await loadPage(buildListFilter(req.valid.query), req.valid.query));
 });
 
+// Paged and searchable: an owner with many restaurants must not download all of them at once.
 export const myRestaurants = asyncHandler(async (req, res) => {
-  sendOk(res, await Restaurant.find({ owner: req.user._id }).sort({ name: 1 }));
+  const filter = buildListFilter(req.valid.query, { owner: req.user._id });
+  sendOk(res, await loadPage(filter, req.valid.query));
 });
 
 export const getRestaurant = asyncHandler(async (req, res) => {

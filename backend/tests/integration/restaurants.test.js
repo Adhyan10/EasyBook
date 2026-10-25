@@ -82,7 +82,41 @@ describe('GET /api/restaurants/mine and /:id', () => {
     await createRestaurant(ownerA);
     await createRestaurant(ownerB);
     const res = await request(app).get('/api/restaurants/mine').set(authHeader(ownerA));
-    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data.items).toHaveLength(1);
+    expect(res.body.data.total).toBe(1);
+  });
+
+  it('pages and searches the owner list so an owner with many restaurants gets small responses', async () => {
+    const owner = await createUser('owner');
+    const other = await createUser('owner');
+    for (let i = 1; i <= 15; i += 1) await createRestaurant(owner, { name: `Place ${String(i).padStart(2, '0')}`, area: i === 3 ? 'Koramangala' : '' });
+    await createRestaurant(other, { name: 'Not mine Koramangala', area: 'Koramangala' });
+
+    const first = await request(app).get('/api/restaurants/mine?limit=10').set(authHeader(owner));
+    expect(first.body.data).toMatchObject({ page: 1, limit: 10, total: 15 });
+    expect(first.body.data.items).toHaveLength(10);
+    const second = await request(app).get('/api/restaurants/mine?limit=10&page=2').set(authHeader(owner));
+    expect(second.body.data.items).toHaveLength(5);
+
+    const byArea = await request(app).get('/api/restaurants/mine?q=koramangala').set(authHeader(owner));
+    expect(byArea.body.data.items.map((r) => r.name)).toEqual(['Place 03']);
+    const byName = await request(app).get('/api/restaurants/mine?q=place%2007').set(authHeader(owner));
+    expect(byName.body.data.total).toBe(1);
+  });
+
+  it('defaults to a small page and caps the page size', async () => {
+    const owner = await createUser('owner');
+    for (let i = 0; i < 12; i += 1) await createRestaurant(owner);
+    const defaults = await request(app).get('/api/restaurants/mine').set(authHeader(owner));
+    expect(defaults.body.data.limit).toBe(10);
+    expect(defaults.body.data.items).toHaveLength(10);
+    expect((await request(app).get('/api/restaurants/mine?limit=500').set(authHeader(owner))).status).toBe(400);
+  });
+
+  it('still forbids diners and anonymous callers', async () => {
+    const diner = await createUser('diner');
+    expect((await request(app).get('/api/restaurants/mine').set(authHeader(diner))).status).toBe(403);
+    expect((await request(app).get('/api/restaurants/mine')).status).toBe(401);
   });
 
   it('returns 404 for a missing restaurant and 400 for a malformed id', async () => {
