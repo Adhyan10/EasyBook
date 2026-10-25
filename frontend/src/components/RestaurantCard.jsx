@@ -1,15 +1,22 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import photos from '../data/coverPhotos.json';
 import { coverClass } from '../lib/cuisine.js';
 import { pickCover } from '../lib/coverPhoto.js';
+import { prefetchRestaurant } from '../lib/prefetch.js';
 
 export default function RestaurantCard({ restaurant, index = 0 }) {
   const place = [restaurant.area, restaurant.city].filter(Boolean).join(', ');
   const photo = pickCover(photos, restaurant);
+  const { call } = useAuth();
+  const warmUp = () => prefetchRestaurant(call, restaurant._id);
   return (
     <Link
       to={`/restaurants/${restaurant._id}`}
       className="rcard"
+      onMouseEnter={warmUp}
+      onFocus={warmUp}
+      onTouchStart={warmUp}
       style={{ '--i': index }}
       aria-label={`${restaurant.name}, ${restaurant.cuisine}, ${place}`}
     >

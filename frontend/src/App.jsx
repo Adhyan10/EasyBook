@@ -1,15 +1,16 @@
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Browse from './pages/Browse.jsx';
-import Credits from './pages/Credits.jsx';
-import DayReservations from './pages/DayReservations.jsx';
-import Deposits from './pages/Deposits.jsx';
+const Credits = lazy(() => import('./pages/Credits.jsx'));
+const DayReservations = lazy(() => import('./pages/DayReservations.jsx'));
+const Deposits = lazy(() => import('./pages/Deposits.jsx'));
 import Login from './pages/Login.jsx';
-import ManageTables from './pages/ManageTables.jsx';
-import ManageMenu from './pages/ManageMenu.jsx';
-import MyBookings from './pages/MyBookings.jsx';
-import OwnerDashboard from './pages/OwnerDashboard.jsx';
+const ManageTables = lazy(() => import('./pages/ManageTables.jsx'));
+const ManageMenu = lazy(() => import('./pages/ManageMenu.jsx'));
+const MyBookings = lazy(() => import('./pages/MyBookings.jsx'));
+const OwnerDashboard = lazy(() => import('./pages/OwnerDashboard.jsx'));
 import Register from './pages/Register.jsx';
 import RestaurantDetail from './pages/RestaurantDetail.jsx';
 

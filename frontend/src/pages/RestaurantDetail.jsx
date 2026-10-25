@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ErrorBanner, Spinner } from '../components/Feedback.jsx';
+import { ErrorBanner } from '../components/Feedback.jsx';
+import { DetailSkeleton } from '../components/Skeleton.jsx';
 import Menu from '../components/Menu.jsx';
 import ReservationStub from '../components/ReservationStub.jsx';
 import SlotPicker from '../components/SlotPicker.jsx';
@@ -18,7 +19,7 @@ const SLOT_TAKEN = 409;
 export default function RestaurantDetail() {
   const { id } = useParams();
   const { user, call } = useAuth();
-  const restaurant = useLoad(() => call(`/restaurants/${id}`), [id]);
+  const restaurant = useLoad(() => call(`/restaurants/${id}`), [id], { key: `/restaurants/${id}` });
   const [date, setDate] = useState(todayLocal());
   const [partySize, setPartySize] = useState(2);
   const [slots, setSlots] = useState(null);
@@ -103,7 +104,7 @@ export default function RestaurantDetail() {
     }
   };
 
-  if (restaurant.loading && !restaurant.data) return <Spinner />;
+  if (restaurant.loading && !restaurant.data) return <DetailSkeleton />;
   if (restaurant.error) return <ErrorBanner error={restaurant.error} />;
   const place = restaurant.data;
   const deposit = place.depositPerPerson * Number(partySize || 0);

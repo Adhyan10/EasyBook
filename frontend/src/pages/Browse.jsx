@@ -14,11 +14,10 @@ export default function Browse() {
   const [applied, setApplied] = useState(filters);
   const [page, setPage] = useState(1);
 
-  const { data, error, loading } = useLoad(() => {
-    const params = new URLSearchParams({ page, limit: PAGE_SIZE });
-    Object.entries(applied).forEach(([key, value]) => value && params.set(key, value));
-    return call(`/restaurants?${params}`);
-  }, [applied, page]);
+  const params = new URLSearchParams({ page, limit: PAGE_SIZE });
+  Object.entries(applied).forEach(([field, value]) => value && params.set(field, value));
+  const listPath = `/restaurants?${params}`;
+  const { data, error, loading } = useLoad(() => call(listPath), [listPath], { key: listPath });
 
   const update = (field) => (event) => setFilters((previous) => ({ ...previous, [field]: event.target.value }));
   const search = (event) => {

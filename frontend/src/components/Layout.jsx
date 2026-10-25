@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { Spinner } from './Feedback.jsx';
 
 const navClass = ({ isActive }) => `navlink${isActive ? ' active' : ''}`;
 
@@ -34,7 +36,9 @@ export default function Layout() {
           </nav>
         </div>
       </header>
-      <main className="container"><Outlet /></main>
+      <main className="container">
+        <Suspense fallback={<Spinner />}><Outlet /></Suspense>
+      </main>
       <footer className="footer">
         Restaurant data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL).
         Seeded menus, tables and hours are sample data. <Link to="/credits">Photo credits</Link>

@@ -11,7 +11,9 @@ function VegMark({ isVeg }) {
 
 export default function Menu({ restaurantId }) {
   const { call } = useAuth();
-  const { data, error, loading } = useLoad(() => call(`/restaurants/${restaurantId}/menu`), [restaurantId]);
+  const { data, error, loading } = useLoad(() => call(`/restaurants/${restaurantId}/menu`), [restaurantId], {
+    key: `/restaurants/${restaurantId}/menu`,
+  });
 
   return (
     <section className="card">

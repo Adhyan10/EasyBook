@@ -46,6 +46,14 @@ React client ──HTTPS──> Express API ──> MongoDB
 - **Deliberate simplification:** fixed slot length per restaurant (no custom stay durations).
 - **Payout model:** the platform collects deposits (Razorpay test mode) and a ledger records what each restaurant is owed until the owner adjusts it at billing. Real split payouts (Razorpay Route + KYC) are out of scope.
 
+## Performance Notes
+
+- **Fewer database round trips:** menu and availability each run one parallel round trip, and availability never writes on a read. Logged-in requests reuse the user for 30 seconds instead of re-reading it.
+- **Smaller responses:** JSON is gzipped, and public restaurant data is cacheable for 30 seconds. Private and fast-changing responses (bookings, availability, auth) are never cached.
+- **Instant navigation:** the frontend keeps public data in a short in-memory cache, shows it immediately and refreshes in the background. Hovering a restaurant card starts loading its page. Pages show skeleton placeholders instead of a blank spinner, and owner pages load on demand.
+- **Deploy near your database:** each database call is one network round trip. Put the Render service in the same region as the Atlas cluster (Mumbai or Singapore for Indian users). Render's free tier also sleeps when idle, so the first request after a quiet period can take about 30 seconds.
+- **Login is per tab:** each browser tab keeps its own session, so you can stay logged in as an owner in one tab and a diner in another.
+
 ## Local Setup
 
 Requires Node 20+ and a MongoDB (local or Atlas).
