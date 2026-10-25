@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { request } from '../api/http.js';
+import { queryCache } from '../lib/queryCache.js';
 import { browserSessionStore } from '../lib/sessionStore.js';
 
 const UNAUTHORIZED = 401;
@@ -18,7 +19,10 @@ export function AuthProvider({ children }) {
 
   const save = useCallback((next) => {
     store.current.write(next);
-    setSession(next);
+    setSession((previous) => {
+      if (previous?.user?.id !== next?.user?.id) queryCache.clear();
+      return next;
+    });
   }, []);
 
   useEffect(() => {

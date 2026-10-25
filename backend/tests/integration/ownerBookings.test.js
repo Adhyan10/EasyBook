@@ -172,3 +172,24 @@ describe('PATCH /api/bookings/:id/retry-refund', () => {
     expect(bad.status).toBe(400);
   });
 });
+
+describe('owner listings in a single query', () => {
+  it('shows the guest name and deposit on ledger rows and still works when a table was deleted', async () => {
+    const { owner, restaurant, table, diner, booking } = await setup();
+    const res = await request(app).get(`/api/restaurants/${restaurant._id}/deposits`).set(authHeader(owner));
+    expect(res.body.data.items[0].booking).toMatchObject({ slotStart: booking.slotStart, diner: { name: diner.name } });
+
+    await table.deleteOne();
+    const day = await request(app).get(`/api/restaurants/${restaurant._id}/bookings?date=2099-06-15`).set(authHeader(owner));
+    expect(day.status).toBe(200);
+    expect(day.body.data[0].table).toBeNull();
+    expect(day.body.data[0]).toMatchObject({ diner: { name: diner.name }, deposit: { status: 'paid' } });
+    expect(day.body.data[0]).not.toHaveProperty('dinerDoc');
+  });
+
+  it('returns an empty list for a day with no bookings', async () => {
+    const { owner, restaurant } = await setup();
+    const res = await request(app).get(`/api/restaurants/${restaurant._id}/bookings?date=2099-12-31`).set(authHeader(owner));
+    expect(res.body.data).toEqual([]);
+  });
+});

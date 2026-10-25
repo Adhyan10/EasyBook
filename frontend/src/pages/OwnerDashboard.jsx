@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { EmptyState, ErrorBanner, Spinner } from '../components/Feedback.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useLoad } from '../hooks/useLoad.js';
+import { queryCache } from '../lib/queryCache.js';
 
 const EMPTY_FORM = {
   name: '', cuisine: '', city: '', address: '', description: '',
@@ -54,21 +55,58 @@ function CreateRestaurantForm({ onCreated }) {
   );
 }
 
+const PAGE_SIZE = 10;
+
 export default function OwnerDashboard() {
-  const { call } = useAuth();
-  const { data, error, loading, reload } = useLoad(() => call('/restaurants/mine'), []);
+  const { call, user } = useAuth();
+  const [search, setSearch] = useState('');
+  const [applied, setApplied] = useState('');
+  const [page, setPage] = useState(1);
+
+  const params = new URLSearchParams({ page, limit: PAGE_SIZE });
+  if (applied) params.set('q', applied);
+  const path = `/restaurants/mine?${params}`;
+  // Keyed by owner so one account's list is never shown to another account in the same tab.
+  const { data, error, loading, reload } = useLoad(() => call(path), [path], { key: `${user.id}:${path}` });
+
+  const submit = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setApplied(search.trim());
+  };
+  const onCreated = () => {
+    queryCache.clear(`${user.id}:/restaurants/mine`);
+    reload();
+  };
+  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
 
   return (
     <>
       <h1 className="page-title">My restaurants</h1>
+      <form className="search" onSubmit={submit} role="search" style={{ marginBottom: '1rem' }}>
+        <label>
+          Find one of your restaurants
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name or area" />
+        </label>
+        <button type="submit" className="secondary">Search</button>
+      </form>
       <ErrorBanner error={error} />
-      {loading && <Spinner />}
-      {data?.length === 0 && <EmptyState>You have no restaurants yet. Add one below, then add its tables.</EmptyState>}
-      {data?.map((restaurant) => (
+      {loading && !data && <Spinner />}
+      {data && (
+        <p className="small muted">
+          {data.total} {data.total === 1 ? 'restaurant' : 'restaurants'}
+          {applied ? ` matching "${applied}"` : ''}
+        </p>
+      )}
+      {data?.items.length === 0 && !applied && (
+        <EmptyState>You have no restaurants yet. Add one below, then add its tables.</EmptyState>
+      )}
+      {data?.items.length === 0 && applied && <EmptyState>None of your restaurants match that search.</EmptyState>}
+      {data?.items.map((restaurant) => (
         <div className="card" key={restaurant._id}>
           <h2>{restaurant.name}</h2>
           <p className="muted">
-            {restaurant.cuisine} · {restaurant.city} · {restaurant.openTime} – {restaurant.closeTime} · {restaurant.slotMinutes} min slots
+            {restaurant.cuisine} · {restaurant.area ? `${restaurant.area}, ` : ''}{restaurant.city} · {restaurant.openTime} – {restaurant.closeTime} · {restaurant.slotMinutes} min slots
           </p>
           <div className="row">
             <Link className="btn" to={`/owner/restaurants/${restaurant._id}/reservations`}>Today&apos;s reservations</Link>
@@ -78,7 +116,14 @@ export default function OwnerDashboard() {
           </div>
         </div>
       ))}
-      <CreateRestaurantForm onCreated={reload} />
+      {data && totalPages > 1 && (
+        <div className="row row--center pager">
+          <button type="button" className="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
+          <span className="small muted">Page {page} of {totalPages}</span>
+          <button type="button" className="secondary" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
+        </div>
+      )}
+      <CreateRestaurantForm onCreated={onCreated} />
     </>
   );
 }
