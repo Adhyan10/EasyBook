@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_CONTROL } from '../constants.js';
 import { Restaurant } from '../models/Restaurant.js';
 import { hasFutureActiveBookings } from '../services/bookingQueries.js';
 import { getOwnedRestaurant } from '../services/ownership.js';
@@ -23,9 +24,10 @@ export const listRestaurants = asyncHandler(async (req, res) => {
     ...(q && { $or: [{ name: new RegExp(escapeRegex(q), 'i') }, { area: new RegExp(escapeRegex(q), 'i') }] }),
   };
   const [items, total] = await Promise.all([
-    Restaurant.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit),
+    Restaurant.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit).lean(),
     Restaurant.countDocuments(filter),
   ]);
+  res.set('Cache-Control', PUBLIC_CACHE_CONTROL);
   sendOk(res, { items, page, limit, total });
 });
 
@@ -34,8 +36,9 @@ export const myRestaurants = asyncHandler(async (req, res) => {
 });
 
 export const getRestaurant = asyncHandler(async (req, res) => {
-  const restaurant = await Restaurant.findById(req.valid.params.id);
+  const restaurant = await Restaurant.findById(req.valid.params.id).lean();
   if (!restaurant) throw new AppError(404, 'Restaurant not found');
+  res.set('Cache-Control', PUBLIC_CACHE_CONTROL);
   sendOk(res, restaurant);
 });
 

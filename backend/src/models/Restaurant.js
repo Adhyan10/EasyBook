@@ -22,6 +22,7 @@ const restaurantSchema = new mongoose.Schema(
 );
 
 restaurantSchema.index({ city: 1, cuisine: 1 });
+restaurantSchema.index({ name: 1 });
 restaurantSchema.index({ externalId: 1 }, { unique: true, sparse: true });
 
 export const Restaurant = mongoose.models.Restaurant ?? mongoose.model('Restaurant', restaurantSchema);

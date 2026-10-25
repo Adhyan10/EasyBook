@@ -3,7 +3,6 @@ import { Booking } from '../models/Booking.js';
 import { Restaurant } from '../models/Restaurant.js';
 import { Table } from '../models/Table.js';
 import { AppError } from '../utils/AppError.js';
-import { expireStaleHolds } from './holdExpiry.js';
 import { generateSlots, slotInstant } from './slots.js';
 
 const isLiveHold = (booking, now) =>
@@ -24,13 +23,14 @@ export function computeAvailability({ restaurant, date, tables, bookings, partyS
 }
 
 export async function getAvailability({ restaurantId, date, partySize }, now = new Date()) {
-  const restaurant = await Restaurant.findById(restaurantId);
-  if (!restaurant) throw new AppError(404, 'Restaurant not found');
-  await expireStaleHolds({ restaurant: restaurant._id, date }, now);
-  const [tables, bookings] = await Promise.all([
-    Table.find({ restaurant: restaurant._id }).lean(),
-    Booking.find({ restaurant: restaurant._id, date }).lean(),
+  // A read never writes: computeAvailability already ignores expired holds, so there is nothing to clean up
+  // first, and the three lookups are independent, so they run in one round trip.
+  const [restaurant, tables, bookings] = await Promise.all([
+    Restaurant.findById(restaurantId).lean(),
+    Table.find({ restaurant: restaurantId }).lean(),
+    Booking.find({ restaurant: restaurantId, date }).lean(),
   ]);
+  if (!restaurant) throw new AppError(404, 'Restaurant not found');
   const slots = computeAvailability({ restaurant, date, tables, bookings, partySize, now });
   return { date, partySize, slots };
 }

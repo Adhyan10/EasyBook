@@ -11,6 +11,9 @@ export const MS_PER_MINUTE = 60_000;
 export const MS_PER_HOUR = 3_600_000;
 export const PAISE_PER_RUPEE = 100;
 export const MAX_LIVE_HOLDS_PER_DINER = 3;
+export const PUBLIC_CACHE_CONTROL = 'public, max-age=30, stale-while-revalidate=120';
+export const AUTH_USER_CACHE_TTL_MS = 30_000;
+export const AUTH_USER_CACHE_MAX = 1000;
 export const REFUND_RETRY_ATTEMPTS = 3;
 export const REFUND_RETRY_DELAY_MS = 2000;
 

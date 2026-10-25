@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_CONTROL } from '../constants.js';
 import { MenuItem } from '../models/MenuItem.js';
 import { Restaurant } from '../models/Restaurant.js';
 import { groupMenu } from '../services/menuView.js';
@@ -15,8 +16,13 @@ async function getOwnedItem(itemId, userId) {
 
 export const getMenu = asyncHandler(async (req, res) => {
   const restaurantId = req.valid.params.id;
-  if (!(await Restaurant.exists({ _id: restaurantId }))) throw new AppError(404, 'Restaurant not found');
-  const items = await MenuItem.find({ restaurant: restaurantId }).sort({ createdAt: 1, _id: 1 }).lean();
+  // One round trip, not two: the existence check and the items query do not depend on each other.
+  const [exists, items] = await Promise.all([
+    Restaurant.exists({ _id: restaurantId }),
+    MenuItem.find({ restaurant: restaurantId }).sort({ createdAt: 1, _id: 1 }).lean(),
+  ]);
+  if (!exists) throw new AppError(404, 'Restaurant not found');
+  res.set('Cache-Control', PUBLIC_CACHE_CONTROL);
   sendOk(res, groupMenu(items));
 });
 
