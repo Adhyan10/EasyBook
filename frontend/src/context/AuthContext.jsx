@@ -1,52 +1,46 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { request } from '../api/http.js';
+import { browserSessionStore } from '../lib/sessionStore.js';
 
-const TOKEN_KEY = 'easybook.token';
+const UNAUTHORIZED = 401;
 const AuthContext = createContext(null);
 
-function readToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function writeToken(token) {
-  try {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    // Storage can be blocked (private mode); the session just won't persist.
-  }
-}
-
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(readToken);
-  const [user, setUser] = useState(null);
-  const [ready, setReady] = useState(() => !readToken());
+  const store = useRef(null);
+  if (store.current === null) {
+    store.current = browserSessionStore();
+    store.current.clearLegacy();
+  }
+  // The saved user is trusted for rendering right away; /auth/me re-checks it in the background.
+  const [session, setSession] = useState(() => store.current.read());
+  const token = session?.token ?? null;
+  const user = session?.user ?? null;
+
+  const save = useCallback((next) => {
+    store.current.write(next);
+    setSession(next);
+  }, []);
 
   useEffect(() => {
-    if (!token) {
-      setUser(null);
-      setReady(true);
-      return;
-    }
+    if (!token) return undefined;
+    let isCurrent = true;
     request('/auth/me', { token })
-      .then((data) => setUser(data.user))
-      .catch(() => {
-        writeToken(null);
-        setToken(null);
-      })
-      .finally(() => setReady(true));
-  }, [token]);
+      .then((data) => isCurrent && save({ token, user: data.user }))
+      .catch((err) => {
+        if (isCurrent && err.status === UNAUTHORIZED) save(null);
+      });
+    return () => {
+      isCurrent = false;
+    };
+  }, [token, save]);
 
-  const establish = useCallback((data) => {
-    writeToken(data.token);
-    setUser(data.user);
-    setToken(data.token);
-    return data.user;
-  }, []);
+  const establish = useCallback(
+    (data) => {
+      save({ token: data.token, user: data.user });
+      return data.user;
+    },
+    [save],
+  );
 
   const login = useCallback(
     async (email, password) => establish(await request('/auth/login', { method: 'POST', body: { email, password } })),
@@ -56,16 +50,12 @@ export function AuthProvider({ children }) {
     async (fields) => establish(await request('/auth/register', { method: 'POST', body: fields })),
     [establish],
   );
-  const logout = useCallback(() => {
-    writeToken(null);
-    setUser(null);
-    setToken(null);
-  }, []);
+  const logout = useCallback(() => save(null), [save]);
   const call = useCallback((path, options = {}) => request(path, { ...options, token }), [token]);
 
   const value = useMemo(
-    () => ({ user, token, ready, login, register, logout, call }),
-    [user, token, ready, login, register, logout, call],
+    () => ({ user, token, ready: true, login, register, logout, call }),
+    [user, token, login, register, logout, call],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
