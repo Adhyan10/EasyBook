@@ -2,7 +2,9 @@
 
 Table reservations with a refundable deposit, built for restaurants that still take bookings over phone and WhatsApp.
 
-**Live app:** https://[client-url]  ·  **API:** https://[api-url]/api/health  ·  **Demo video:** [link]
+**Live app:** https://easybook-opal.vercel.app  ·  **API health:** https://easybook-1swf.onrender.com/api/health  ·  **Source:** https://github.com/Adhyan10/EasyBook  ·  **Demo video:** [add link]
+
+> The API runs on Render's free tier, which sleeps when idle. The very first request after a quiet period can take 30 to 50 seconds. Payments use **Razorpay test mode**, so no real money moves: pay with test card `4111 1111 1111 1111` (any future expiry and CVV, OTP `1234`) or UPI `success@razorpay`.
 
 **Demo logins** (test data): owner `owner@demo.com` (password is whatever `SEED_OWNER_PASSWORD` you set when seeding) and a diner account you register yourself. Add the credentials you choose here before submitting.
 
@@ -79,7 +81,7 @@ Known limits: password hashing (bcrypt, cost 10) is the slowest path at about 20
 Requires Node 20+ and a MongoDB (local or Atlas).
 
 ```bash
-git clone [repo-url] && cd EasyBook
+git clone https://github.com/Adhyan10/EasyBook.git && cd EasyBook
 cd backend && cp .env.example .env     # fill in MONGO_URI and JWT_SECRET
 npm install && npm run dev            # API on http://localhost:5000
 cd ../frontend && cp .env.example .env
@@ -120,12 +122,13 @@ npm run seed:fetch    # optional: refresh the snapshot from OpenStreetMap (needs
 | `MOCK_GATEWAY_SECRET` | backend | Signing secret for the mock gateway |
 | `SEED_OWNER_PASSWORD` | backend | Required by `npm run seed`: password for the demo owner `owner@demo.com` (8+ characters, your choice) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | backend | Razorpay test-mode credentials, required when `GATEWAY=razorpay` |
-| `VITE_API_URL` | frontend | API base URL, e.g. `https://[api-url]/api` |
+| `VITE_API_URL` | frontend | API base URL, e.g. `https://easybook-1swf.onrender.com/api` |
 
 ## Deployment
 
 - **Database:** MongoDB Atlas free cluster.
-- **Backend:** Render web service, root `backend`, build `npm install`, start `npm start`.
-- **Frontend:** Vercel, root `frontend`, framework Vite.
-- Razorpay webhook (when `GATEWAY=razorpay`): `https://[api-url]/api/payments/webhook`, event `payment.captured`.
+- **Backend:** Render web service (https://easybook-1swf.onrender.com), root `backend`, build `npm install`, start `npm start`. Needs `NODE_ENV=production`, `MONGO_URI`, `JWT_SECRET`, `CLIENT_ORIGIN` (the frontend address), and the `GATEWAY` / Razorpay variables listed above.
+- **Frontend:** Vercel (https://easybook-opal.vercel.app), root `frontend`, framework Vite, with `VITE_API_URL` pointing at the backend's `/api`. Every push to `main` redeploys it automatically.
+- **Security note:** the API only accepts browser requests from the address in `CLIENT_ORIGIN`; any other website is refused.
+- Razorpay webhook (when `GATEWAY=razorpay`): `https://easybook-1swf.onrender.com/api/payments/webhook`, event `payment.captured`.
 - The free Render tier sleeps when idle. Hold expiry is also checked lazily on every read, so correctness does not depend on the background job.
