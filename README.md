@@ -54,6 +54,26 @@ React client ──HTTPS──> Express API ──> MongoDB
 - **Deploy near your database:** each database call is one network round trip. Put the Render service in the same region as the Atlas cluster (Mumbai or Singapore for Indian users). Render's free tier also sleeps when idle, so the first request after a quiet period can take about 30 seconds.
 - **Login is per tab:** each browser tab keeps its own session, so you can stay logged in as an owner in one tab and a diner in another.
 
+## Load Testing
+
+`cd backend && npm run loadtest` starts a throwaway copy of the API (temporary in-memory MongoDB with the real 200-restaurant seed, no rate limiter, mock payments) and drives it with [autocannon](https://github.com/mcollina/autocannon). It never touches the real database or Razorpay. `DURATION` and `CONNECTIONS` set the length and concurrency.
+
+Results on a laptop, 50 connections, 8 s per scenario, no network latency to a hosted database:
+
+| Scenario | req/s | p50 | p99 | Failed |
+|---|---|---|---|---|
+| Restaurant list / search | 5,900 / 8,500 | 8 ms / 5 ms | 13 ms / 8 ms | 0 |
+| Restaurant detail / menu | 14,000 / 6,900 | 3 ms / 7 ms | 5 ms / 10 ms | 0 |
+| Availability | 6,600 | 7 ms | 10 ms | 0 |
+| Token check, my bookings | 18,000 / 8,300 | 2 ms / 5 ms | 3 ms / 7 ms | 0 |
+| Owner dashboard / reservations | 5,600 / 6,500 | 8 ms / 7 ms | 14 ms / 17 ms | 0 |
+| Login (bcrypt, 20 connections) | 20 | 1,089 ms | 4,235 ms | 0 |
+| Mixed browsing | 6,600 | 6 ms | 10 ms | 0 |
+
+At 200 connections nothing failed and p99 stayed under 70 ms for reads. **No double booking under a race:** 150 diners booking the same slot at the same instant produced exactly 1, 5 and 20 bookings for 1, 5 and 20 tables, and every other request got a clean 409.
+
+Known limits: password hashing (bcrypt, cost 10) is the slowest path at about 20 logins per second and briefly occupies the server while it runs. The login rate limiter (20 attempts per 15 minutes per client) protects it. In production the real limits are the hosted database (Atlas free tier: 100 connections) and the network round trip to it, not the app.
+
 ## Local Setup
 
 Requires Node 20+ and a MongoDB (local or Atlas).
