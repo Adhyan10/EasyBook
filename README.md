@@ -2,7 +2,7 @@
 
 Table reservations with a refundable deposit, built for restaurants that still take bookings over phone and WhatsApp.
 
-**Live app:** https://easybook-opal.vercel.app  ·  **API health:** https://easybook-1swf.onrender.com/api/health  ·  **Source:** https://github.com/Adhyan10/EasyBook  ·  **Demo video:** [add link]
+**Live app:** https://easybook-opal.vercel.app  ·  **API health:** https://easybook-1swf.onrender.com/api/health  ·  **Source:** https://github.com/Adhyan10/EasyBook  ·  **Demo video:** [link to be added ]
 
 > The API runs on Render's free tier, which sleeps when idle. The very first request after a quiet period can take 30 to 50 seconds. Payments use **Razorpay test mode**, so no real money moves: pay with test card `4111 1111 1111 1111` (any future expiry and CVV, OTP `1234`) or UPI `success@razorpay`.
 
